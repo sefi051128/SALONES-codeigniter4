@@ -14,10 +14,22 @@ class InventoryModel extends Model
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
     protected $validationRules = [
-        'code' => 'required|is_unique[inventory_items.code]',
-        'name' => 'required|min_length[3]',
-        'location' => 'required',
-        'status' => 'required'
-    ];
+    'code' => 'required|is_unique[inventory_items.code,id,{id}]',
+    'name' => 'required|min_length[3]',
+    'location' => 'required',
+    'status' => 'required'
+];
+
+public function getValidationRules(array $options = []): array
+{
+    $rules = $this->validationRules;
+    
+    // Si estamos actualizando, ajustamos la regla para el código
+    if (isset($options['id'])) {
+        $rules['code'] = str_replace('{id}', $options['id'], $rules['code']);
+    }
+    
+    return $rules;
+}
 
 }

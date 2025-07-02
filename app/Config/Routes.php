@@ -13,8 +13,10 @@ $routes->get('/logout', 'Home::logout');
 
 // Redirección para páginas no encontradas
 $routes->set404Override(function($msg = null) {
-    return redirect()->to('/inventory');
+    redirect()->to('/inventory')->send();
+    exit; // Evita que el flujo continúe
 });
+
 
 
 // -----------------------------
@@ -33,12 +35,14 @@ $routes->post('/inventory/store', 'Inventory::store');
 $routes->get('inventory/report', 'Inventory::report');
 
 
-$routes->get('inventory/edit/(:num)', 'Inventory::edit/$1');
-$routes->post('inventory/update/(:num)', 'Inventory::update/$1');
-
-
 //Qr y mapa de articulos de inventario
 $routes->get('inventory/update-location/(:num)', 'Inventory::updateLocation/$1');
 $routes->get('inventory/qr/(:num)', 'Inventory::qr/$1');
 $routes->get('inventory/delete/(:num)', 'Inventory::delete/$1');
+
+$routes->get('inventory/edit/(:num)', 'Inventory::edit/$1');
+$routes->post('inventory/update/(:num)', 'Inventory::update/$1');
+
+$routes->get('inventory/delete/(:num)', 'Inventory::delete/$1');
+
 

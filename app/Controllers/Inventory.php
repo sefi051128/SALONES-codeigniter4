@@ -49,7 +49,7 @@ class Inventory extends BaseController
         ]);
     }
 
-
+    //Generar código QR para un artículo
     public function qr($id)
 {
     $model = new \App\Models\InventoryModel();
@@ -62,6 +62,7 @@ class Inventory extends BaseController
     return view('inventory/qr', ['item' => $item]);
 }
 
+//Crear un nuevo artículo
 public function create()
 {
     return view('inventory/create', [
@@ -70,6 +71,7 @@ public function create()
     ]);
 }
 
+//Contar cantidad de artículos
 public function store()
 {
     $this->inventoryModel = new \App\Models\InventoryModel();
@@ -97,8 +99,7 @@ public function store()
     return redirect()->to('/inventory')->with('success', "$insertados artículo(s) agregado(s).");
 }
 
-
-
+//Inserción de prueba
 public function testInsert()
 {
     $model = new \App\Models\InventoryModel();
@@ -124,9 +125,10 @@ protected $inventoryModel;
 public function __construct()
 {
     $this->inventoryModel = new \App\Models\InventoryModel();
-    helper(['form']); // por si no lo habías incluido aún
+    helper(['form']); // Carga el helper de formularios
 }
 
+//Generar reporte de inventario
 public function report()
 {
     $inventoryModel = new \App\Models\InventoryModel();
@@ -149,6 +151,68 @@ public function report()
     $dompdf->stream('reporte_inventario.pdf', ['Attachment' => false]);
 }
 
+// Editar un artículo
+public function edit($id)
+{
+    $model = new \App\Models\InventoryModel();
+    $item = $model->find($id);
 
+    if (!$item) {
+        return redirect()->to('/inventory')->with('error', 'Artículo no encontrado.');
+    }
+
+    return view('inventory/edit', [
+        'title' => 'Editar artículo',
+        'item' => $item,
+        'validation' => \Config\Services::validation()
+    ]);
+}
+
+// Actualizar un artículo
+public function update($id)
+{
+    $model = new \App\Models\InventoryModel();
+    $item = $model->find($id);
+
+    if (!$item) {
+        return redirect()->to('/inventory')->with('error', 'Artículo no encontrado.');
+    }
+
+    // Obtener reglas de validación incluyendo el ID para is_unique
+    $rules = $model->getValidationRules(['id' => $id]);
+
+    // Validar los datos
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('validation', $this->validator);
+    }
+
+    // Resto del método permanece igual...
+    $data = [
+        'name' => $this->request->getPost('name'),
+        'location' => $this->request->getPost('location'),
+        'status' => $this->request->getPost('status'),
+        'current_responsible' => $this->request->getPost('current_responsible')
+    ];
+
+    if ($model->update($id, $data)) {
+        return redirect()->to('/inventory')->with('success', 'Artículo actualizado correctamente.');
+    } else {
+        return redirect()->back()->withInput()->with('error', 'No se pudo actualizar el artículo.');
+    }
+}
+
+//Eliminar un artículo
+public function delete($id)
+{
+    $model = new \App\Models\InventoryModel();
+    
+    if (!$model->find($id)) {
+        return redirect()->to('/inventory')->with('error', 'Artículo no encontrado.');
+    }
+
+    $model->delete($id);
+
+    return redirect()->to('/inventory')->with('success', 'Artículo eliminado exitosamente.');
+}
 
 }
