@@ -7,8 +7,27 @@
     <style>
         body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; }
         .user-info { background: #f5f5f5; padding: 1rem; border-radius: 5px; margin-bottom: 2rem; }
-        .logout-btn { display: inline-block; padding: 0.5rem 1rem; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
-        .logout-btn:hover { background: #c82333; }
+        .logout-btn, .inventario-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        .inventario-btn {
+            background: #007bff;
+            color: white;
+            margin-left: 1rem;
+        }
+        .inventario-btn:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -17,6 +36,9 @@
         <p><strong>Rol:</strong> <?= esc(session('role')) ?></p>
         <p><strong>ID de Usuario:</strong> <?= esc(session('user_id')) ?></p>
         <a href="<?= base_url('/logout') ?>" class="logout-btn">Cerrar sesión</a>
+        <!-- Botón para ir al Inventario -->
+        <a href="<?= base_url('/inventory') ?>" class="inventario-btn">Ver Inventario</a>
+
     </div>
 
     <!-- Contenido específico según el rol -->

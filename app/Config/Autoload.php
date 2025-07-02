@@ -38,7 +38,8 @@ class Autoload extends AutoloadConfig
      * @var array<string, list<string>|string>
      */
     public $psr4 = [
-        APP_NAMESPACE => APPPATH,
+        'App'         => APPPATH,
+    'Config'      => APPPATH . 'Config',
     ];
 
     /**
@@ -75,7 +76,9 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $files = [];
+    public $files = [
+         ROOTPATH . 'vendor/autoload.php', // asegúrate de que esto esté
+    ];
 
     /**
      * -------------------------------------------------------------------

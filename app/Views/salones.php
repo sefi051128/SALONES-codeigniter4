@@ -16,6 +16,7 @@
                     <th>Capacidad</th>
                 </tr>
             </thead>
+                       
             <tbody>
                 <?php foreach ($salones as $salon): ?>
                     <tr>
