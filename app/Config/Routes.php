@@ -46,3 +46,30 @@ $routes->post('inventory/update/(:num)', 'Inventory::update/$1');
 $routes->get('inventory/delete/(:num)', 'Inventory::delete/$1');
 
 
+// Login y registro
+$routes->get('/', 'Home::index');
+$routes->post('/login', 'Home::login');
+$routes->get('/register', 'Home::register');
+$routes->post('/createUser', 'Home::createUser');
+$routes->get('/logout', 'Home::logout');
+
+// Panel de administrador (usa inicio.php)
+$routes->get('/inicio', 'Home::inicio');
+
+// Dashboards por rol
+$routes->get('/cliente/dashboard', 'Cliente::dashboard');
+$routes->get('/coordinador/dashboard', 'Coordinador::dashboard');
+$routes->get('/logistica/dashboard', 'Logistica::dashboard');
+$routes->get('/seguridad/dashboard', 'Seguridad::dashboard');
+
+// Rutas CRUD para administrador (usa Admin.php)
+$routes->group('admin', ['filter' => 'auth:administrador'], function($routes) {
+    $routes->get('usuarios', 'Admin::usuarios');
+    $routes->get('crear', 'Admin::crear');
+    $routes->post('crear', 'Admin::crear');
+    $routes->get('editar/(:num)', 'Admin::editar/$1');
+    $routes->post('editar/(:num)', 'Admin::editar/$1');
+    $routes->get('eliminar/(:num)', 'Admin::eliminar/$1');
+});
+
+$routes->get('/cliente/dashboard', 'Cliente::dashboard', ['as' => 'cliente.dashboard']);

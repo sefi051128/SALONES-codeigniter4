@@ -32,17 +32,10 @@
                 <input type="password" id="password" name="password" required>
             </div>
 
-            <div class="form-group">
-                <label for="role">Rol:</label>
-                <select id="role" name="role" required>
-                    <option value="">Seleccione un rol</option>
-                    <option value="administrador" <?= old('role') == 'administrador' ? 'selected' : '' ?>>Administrador</option>
-                    <option value="coordinador" <?= old('role') == 'coordinador' ? 'selected' : '' ?>>Coordinador</option>
-                    <option value="cliente" <?= old('role') == 'cliente' ? 'selected' : '' ?>>Cliente</option>
-                    <option value="logística" <?= old('role') == 'logística' ? 'selected' : '' ?>>Logística</option>
-                    <option value="seguridad" <?= old('role') == 'seguridad' ? 'selected' : '' ?>>Seguridad</option>
-                </select>
-            </div>
+           <!-- Reemplaza el div del "role" en register.php por esto: -->
+            <input type="hidden" name="role" value="cliente"> 
+            
+            
 
             <div class="form-group">
                 <label for="contact_info">Información de Contacto (opcional):</label>
