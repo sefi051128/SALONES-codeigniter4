@@ -7,20 +7,20 @@ class UserModel extends Model
 {
     protected $table = 'users';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['username', 'password', 'role', 'contact_info'];
-    protected $returnType = 'array'; // Para compatibilidad con password_verify
+    protected $allowedFields = ['username', 'password', 'role', 'phone', 'email'];
+    protected $returnType = 'array';
+    protected $beforeInsert = ['hashPassword'];
+
+    protected function hashPassword(array $data)
+    {
+        if (isset($data['data']['password'])) {
+            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
+        }
+        return $data;
+    }
 
     public function getUser($username)
     {
         return $this->where('username', $username)->first();
-    }
-
-    public function createUser($data)
-    {
-        // Asegurar que la contraseña se hashee correctamente
-        if (isset($data['password'])) {
-            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
-        }
-        return $this->insert($data);
     }
 }

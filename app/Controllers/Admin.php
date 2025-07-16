@@ -13,11 +13,27 @@ class Admin extends BaseController
         helper(['form', 'url', 'session']);
     }
 
+    // Añade este nuevo método para el dashboard del admin
+    public function inicio()
+{
+    if (session('role') !== 'administrador') {
+        return redirect()->to('/')->with('error', 'Acceso no autorizado');
+    }
+
+    $data = [
+        'titulo' => 'Panel de Administración',
+        'usuario' => session('username'),
+        'fecha' => date('Y-m-d H:i:s')
+    ];
+
+    return view('admin/inicioAdmin', $data);
+}
+
     public function usuarios()
     {
         // Verificar si es administrador
         if (session('role') !== 'administrador') {
-            return redirect()->to('/inicio')->with('error', 'Acceso no autorizado');
+            return redirect()->to('/admin/inicio')->with('error', 'Acceso no autorizado');
         }
 
         $data = [
@@ -25,13 +41,13 @@ class Admin extends BaseController
             'usuarios' => $this->userModel->findAll()
         ];
 
-        return view('inicio', $data);
+        return view('admin/inicio', $data);
     }
 
     public function crear()
     {
         if (session('role') !== 'administrador') {
-            return redirect()->to('/inicio')->with('error', 'Acceso no autorizado');
+            return redirect()->to('/admin/inicio')->with('error', 'Acceso no autorizado');
         }
 
         if ($this->request->getMethod() === 'post') {

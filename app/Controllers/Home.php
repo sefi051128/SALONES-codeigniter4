@@ -5,6 +5,7 @@ use App\Models\UserModel;
 
 class Home extends BaseController
 {
+    /*
     public function index()
     {
         // Redirigir usuarios logueados
@@ -13,6 +14,7 @@ class Home extends BaseController
         }
         return view('login');
     }
+        */
 
     public function register()
     {
@@ -62,23 +64,24 @@ class Home extends BaseController
 
         // Redirigir según el rol
         switch ($user['role']) {
-            case 'administrador':
-                return redirect()->to('/inicio'); // Usa inicio.php
-            case 'coordinador':
-                return redirect()->to('/coordinador/dashboard');
-            case 'logística':
-                return redirect()->to('/logistica/dashboard');
-            case 'seguridad':
-                return redirect()->to('/seguridad/dashboard');
-            default: // cliente
-                return redirect()->to('/cliente/dashboard');
-        }
+    case 'administrador':
+        return redirect()->to('/admin'); // Va a Admin::inicio
+    case 'coordinador':
+        return redirect()->to('/coordinador/dashboard');
+    case 'logística':
+        return redirect()->to('/logistica/dashboard');
+    case 'seguridad':
+        return redirect()->to('/seguridad/dashboard');
+    default: // cliente
+        return redirect()->to('/inicio');
+}
     }
 
     return redirect()->back()->withInput()->with('error', 'Credenciales inválidas');
 }
 
-    public function inicio()
+/*    
+public function inicio()
     {
         // Verificar autenticación
         if (!session('isLoggedIn')) {
@@ -87,6 +90,13 @@ class Home extends BaseController
 
         return view('inicio');
     }
+        */
+    
+    
+    public function inicio()
+    {
+        return view('inicio'); // Esto cargará app/views/inicio.php
+    }
 
     public function logout()
     {
@@ -94,4 +104,6 @@ class Home extends BaseController
         session()->destroy();
         return redirect()->to('/');
     }
+
+    
 }
