@@ -4,204 +4,274 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Panel de Control</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos personalizados -->
     <style>
-        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        .user-info { 
-            background: #f5f5f5; 
-            padding: 1rem; 
-            border-radius: 5px; 
-            margin-bottom: 2rem; 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --dark-color: #5a5c69;
         }
-        .user-details { flex-grow: 1; }
-        .action-buttons { display: flex; gap: 10px; }
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            text-decoration: none;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            min-width: 120px;
-        }
-        .btn-logout { background: #dc3545; }
-        .btn-logout:hover { background: #c82333; }
-        .btn-inventario { background: #007bff; }
-        .btn-inventario:hover { background: #0056b3; }
-        .btn-users { background: #28a745; }
-        .btn-users:hover { background: #218838; }
         
-        /* Estilos para la sección de usuarios */
-        .users-section { margin-top: 2rem; }
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-        .users-table th, .users-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
+        
+        .user-card {
+            background: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
         }
-        .users-table th {
-            background-color: #343a40;
-            color: white;
-        }
-        .users-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .users-table tr:hover {
-            background-color: #f1f1f1;
-        }
-        .action-btn {
-            padding: 0.4rem 0.8rem;
-            margin: 0 0.2rem;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .btn-edit { 
-            background-color: #ffc107; 
-            color: #212529;
-        }
-        .btn-delete { 
-            background-color: #dc3545; 
-            color: white;
-        }
-        .btn-create {
-            display: inline-block;
-            margin-top: 1.5rem;
-            background: #17a2b8;
-            color: white;
-            padding: 0.7rem 1.3rem;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        .btn-create:hover {
-            background: #138496;
-            transform: translateY(-2px);
-        }
+        
         .badge-role {
-            display: inline-block;
-            padding: 0.25em 0.6em;
-            border-radius: 10px;
-            font-size: 0.85em;
-            font-weight: bold;
-            color: white;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.5rem 0.8rem;
+            border-radius: 0.35rem;
         }
-        .badge-admin { background-color: #dc3545; }
-        .badge-coord { background-color: #6f42c1; }
-        .badge-client { background-color: #28a745; }
-        .badge-logistic { background-color: #fd7e14; }
-        .badge-security { background-color: #17a2b8; }
+        
+        .badge-admin { background-color: var(--danger-color); }
+        .badge-coord { background-color: var(--warning-color); color: #000; }
+        .badge-client { background-color: var(--success-color); }
+        .badge-logistic { background-color: var(--info-color); }
+        .badge-security { background-color: var(--dark-color); }
+        
+        .card-dashboard {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .card-dashboard:hover {
+            transform: translateY(-5px);
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table th {
+            background-color: var(--dark-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .action-btn {
+            margin-right: 0.3rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .action-btn {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .nav-links .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="user-info">
-        <div class="user-details">
-            <h1>Bienvenido, <?= esc(session('username')) ?></h1>
-            <p><strong>Rol:</strong> <?= esc(session('role')) ?></p>
-             <p><strong>ID de Usuario:</strong> <?= esc(session('user_id')) ?>
-        </div>
-
-        <div class="action-buttons">
-
-    <a href="<?= base_url('/logout') ?>" class="btn btn-logout">Cerrar sesión</a>
-    <a href="<?= base_url('/logout') ?>" class="btn btn-logout">Boton pendiente</a>
-    <a href="<?= base_url('/inventory') ?>" class="btn btn-inventario">Ver inventario general</a>
-    <?php if (session('role') === 'administrador'): ?>
-        <a href="<?= base_url('/users') ?>" class="btn btn-users">Ver usuarios</a>
-
-    <?php endif; ?>
-</div>
-    </div>
-
-    <?php if (session('role') === 'administrador'): ?>
-        <div class="admin-content">
-            <h2>Panel de Administración</h2>
-            
-            <?php if (isset($show_users) && $show_users): ?>
-                <div class="users-section">
-                    <h3>Gestión de Usuarios</h3>
-                    
-                    <?php if(session()->getFlashdata('success')): ?>
-                        <div style="color: green; padding: 10px; background: #e8f5e9; margin-bottom: 15px; border-radius: 4px;">
-                            <?= session()->getFlashdata('success') ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php if(session()->getFlashdata('error')): ?>
-                        <div style="color: #721c24; padding: 10px; background: #f8d7da; margin-bottom: 15px; border-radius: 4px;">
-                            <?= session()->getFlashdata('error') ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <table class="users-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Usuario</th>
-                                <th>Rol</th>
-                                <th>Contacto</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($usuarios as $usuario): ?>
-                            <tr>
-                                <td><?= esc($usuario['id']) ?></td>
-                                <td><?= esc($usuario['username']) ?></td>
-                                <td><?= esc($usuario['role']) ?></td>
-                                <td><?= esc($usuario['contact_info'] ?? 'N/A') ?></td>
-                                <td>
-                                    <a href="<?= base_url('/admin/editar/'.$usuario['id']) ?>" class="action-btn btn-edit">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <a href="<?= base_url('/admin/eliminar/'.$usuario['id']) ?>" 
-                                       class="action-btn btn-delete" 
-                                       onclick="return confirm('¿Eliminar usuario <?= esc($usuario['username']) ?>?')">
-                                        <i class="fas fa-trash"></i> Eliminar
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    
-                    <a href="<?= base_url('/admin/crear') ?>" class="btn-create">
-                        <i class="fas fa-plus"></i> Nuevo Usuario
-                    </a>
+    <div class="container-fluid py-4">
+        <!-- Tarjeta de información del usuario -->
+        <div class="user-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="h4 mb-2 text-gray-800">Bienvenido, <?= esc(session('username')) ?></h1>
+                    <p class="mb-1"><strong>Rol:</strong> <span class="badge-role badge-<?= strtolower(session('role')) ?>"><?= esc(session('role')) ?></span></p>
+                    <p class="mb-0"><strong>ID de Usuario:</strong> <?= esc(session('user_id')) ?></p>
                 </div>
-            <?php else: ?>
-                <div class="admin-default">
-                    <p>Bienvenido al panel de administración. Seleccione una opción del menú superior.</p>
-                    <div style="margin-top: 2rem; display: flex; gap: 15px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 200px; background: #e9ecef; padding: 1.5rem; border-radius: 8px;">
-                            <h3>Resumen del Sistema</h3>
-                            <p>Total usuarios: <?= count($usuarios ?? []) ?></p>
-                        </div>
-                        <div style="flex: 1; min-width: 200px; background: #e9ecef; padding: 1.5rem; border-radius: 8px;">
-                            <h3>Acciones Rápidas</h3>
-                            <a href="<?= base_url('/admin/usuarios') ?>" style="display: block; margin: 5px 0; color: #007bff;">Ver usuarios</a>
-                            <a href="<?= base_url('/admin/crear') ?>" style="display: block; margin: 5px 0; color: #28a745;">Crear usuario</a>
-                        </div>
+                <div class="col-md-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-md-end gap-2 nav-links">
+                        <a href="<?= base_url('sedes') ?>" class="btn btn-info">
+                            <i class="fas fa-building me-1"></i> Sedes
+                        </a>
+                        <a href="<?= base_url('/inventory') ?>" class="btn btn-primary">
+                            <i class="fas fa-boxes me-1"></i> Inventario
+                        </a>
+                        <?php if (session('role') === 'administrador'): ?>
+                            <a href="<?= base_url('/users') ?>" class="btn btn-success">
+                                <i class="fas fa-users me-1"></i> Usuarios
+                            </a>
+                        <?php endif; ?>
+                        <a href="<?= base_url('/logout') ?>" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión
+                        </a>
                     </div>
                 </div>
-            <?php endif; ?>
+            </div>
         </div>
-    <?php endif; ?>
+
+        <?php if (session('role') === 'administrador'): ?>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-tachometer-alt me-2"></i>Panel de Administración
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <?php if (isset($show_users) && $show_users): ?>
+                        <!-- Sección de Gestión de Usuarios -->
+                        <div class="users-section">
+                            <?php if(session()->getFlashdata('success')): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if(session()->getFlashdata('error')): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-exclamation-circle me-2"></i><?= session()->getFlashdata('error') ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="usersTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Usuario</th>
+                                            <th>Rol</th>
+                                            <th>Contacto</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($usuarios as $usuario): ?>
+                                        <tr>
+                                            <td><?= esc($usuario['id']) ?></td>
+                                            <td><?= esc($usuario['username']) ?></td>
+                                            <td>
+                                                <?php 
+                                                    $badgeClass = 'badge-primary';
+                                                    switch(strtolower($usuario['role'])) {
+                                                        case 'administrador': $badgeClass = 'badge-admin'; break;
+                                                        case 'coordinador': $badgeClass = 'badge-coord'; break;
+                                                        case 'cliente': $badgeClass = 'badge-client'; break;
+                                                        case 'logística': $badgeClass = 'badge-logistic'; break;
+                                                        case 'seguridad': $badgeClass = 'badge-security'; break;
+                                                    }
+                                                ?>
+                                                <span class="badge-role <?= $badgeClass ?>"><?= esc($usuario['role']) ?></span>
+                                            </td>
+                                            <td><?= esc($usuario['contact_info'] ?? 'N/A') ?></td>
+                                            <td class="text-nowrap">
+                                                <a href="<?= base_url('/admin/editar/'.$usuario['id']) ?>" class="btn btn-sm btn-warning action-btn" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="<?= base_url('/admin/eliminar/'.$usuario['id']) ?>" 
+                                                   class="btn btn-sm btn-danger action-btn" 
+                                                   title="Eliminar"
+                                                   onclick="return confirm('¿Eliminar usuario <?= esc($usuario['username']) ?>?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <a href="<?= base_url('/admin/crear') ?>" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus me-2"></i>Nuevo Usuario
+                            </a>
+                        </div>
+                    <?php else: ?>
+                        <!-- Vista por defecto del panel -->
+                        <div class="row">
+                            <div class="col-xl-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2 card-dashboard">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    Total de Usuarios</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= count($usuarios ?? []) ?></div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2 card-dashboard">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                    Acciones Rápidas</div>
+                                                <div class="mb-1">
+                                                    <a href="<?= base_url('/admin/usuarios') ?>" class="text-success"><i class="fas fa-arrow-right me-1"></i>Ver usuarios</a>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <a href="<?= base_url('/admin/crear') ?>" class="text-success"><i class="fas fa-arrow-right me-1"></i>Crear usuario</a>
+                                                </div>
+                                                <div>
+                                                    <a href="#" class="text-success"><i class="fas fa-arrow-right me-1"></i>Accesos al almacén</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-bolt fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <p class="text-muted">Seleccione una opción del menú superior o de las tarjetas de resumen.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Bootstrap Bundle con Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables (opcional) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     
-    <!-- Font Awesome para iconos (opcional) -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            // Inicializar DataTable si existe la tabla
+            if ($('#usersTable').length) {
+                $('#usersTable').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                    },
+                    responsive: true
+                });
+            }
+            
+            // Inicializar tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
 </body>
 </html>

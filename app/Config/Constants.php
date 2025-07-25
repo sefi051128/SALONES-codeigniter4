@@ -77,3 +77,6 @@ defined('EXIT_USER_INPUT')     || define('EXIT_USER_INPUT', 7);     // invalid u
 defined('EXIT_DATABASE')       || define('EXIT_DATABASE', 8);       // database error
 defined('EXIT__AUTO_MIN')      || define('EXIT__AUTO_MIN', 9);      // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125);    // highest automatically-assigned error code
+
+//Api de Google Maps
+defined('GOOGLE_MAPS_API_KEY') || define('GOOGLE_MAPS_API_KEY', 'AIzaSyBLq002dYUZwd7Uz3k7RqMbAL-jqCakvfY');

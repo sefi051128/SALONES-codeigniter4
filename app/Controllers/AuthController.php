@@ -48,37 +48,37 @@ class AuthController extends BaseController
     }
 
     public function storeUser()
-    {
-        // Validación
-        $rules = [
-            'username' => 'required|min_length[3]|max_length[20]|is_unique[users.username]',
-            'password' => 'required|min_length[8]',
-            'contact_info' => 'permit_empty|max_length[255]'
-        ];
+{
+    // Validación
+    $rules = [
+        'username' => 'required|min_length[3]|max_length[20]|is_unique[users.username]',
+        'password' => 'required|min_length[8]',
+        'email' => 'required|valid_email|is_unique[users.email]',
+        'phone' => 'permit_empty|regex_match[/^[0-9\-\+\s\(\)]{7,20}$/]'
+    ];
 
-        if (!$this->validate($rules)) {
-            return redirect()->back()
-                            ->withInput()
-                            ->with('errors', $this->validator->getErrors());
-        }
-
-        // Preparar datos
-        $data = [
-            'username' => $this->request->getPost('username'),
-            'password' => $this->request->getPost('password'), // El modelo se encargará del hash
-            'role' => $this->request->getPost('role') ?? 'cliente',
-            'contact_info' => $this->request->getPost('contact_info')
-        ];
-
-        // Usar el método createUser del modelo
-        if ($this->userModel->createUser($data)) {
-            session()->setFlashdata('success', 'Registro exitoso. Por favor inicia sesión.');
-            return redirect()->to('/login');
-        }
-
-        session()->setFlashdata('error', 'Error al registrar el usuario. Inténtalo nuevamente.');
-        return redirect()->back()->withInput();
+    if (!$this->validate($rules)) {
+        return redirect()->back()
+                        ->withInput()
+                        ->with('errors', $this->validator->getErrors());
     }
+
+    $data = [
+        'username' => $this->request->getPost('username'),
+        'password' => $this->request->getPost('password'),
+        'email' => $this->request->getPost('email'),
+        'phone' => $this->request->getPost('phone'),
+        'role' => 'cliente'
+    ];
+
+    if ($this->userModel->createUser($data)) {
+        session()->setFlashdata('success', 'Registro exitoso. Por favor inicia sesión.');
+        return redirect()->to('/login');
+    }
+
+    session()->setFlashdata('error', 'Error al registrar el usuario. Inténtalo nuevamente.');
+    return redirect()->back()->withInput();
+}
 
     public function logout()
     {

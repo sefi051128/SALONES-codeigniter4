@@ -1,268 +1,204 @@
-<style>
-    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; }
-    .user-info { 
-        background: #f5f5f5; 
-        padding: 1rem; 
-        border-radius: 5px; 
-        margin-bottom: 2rem; 
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-    .user-details { flex-grow: 1; }
-    .action-buttons { display: flex; gap: 10px; }
-    .btn {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        text-decoration: none;
-        border-radius: 5px;
-        color: white;
-        font-weight: bold;
-        text-align: center;
-        min-width: 120px;
-    }
-    .btn-logout { background: #dc3545; }
-    .btn-logout:hover { background: #c82333; }
-    .btn-inventario { background: #007bff; }
-    .btn-inventario:hover { background: #0056b3; }
-    .btn-users { background: #28a745; }
-    .btn-users:hover { background: #218838; }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= esc($title) ?></title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --success-color: #1cc88a;
+            --info-color: #17a2b8;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --dark-color: #5a5c69;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .status-badge {
+            padding: 0.35em 0.65em;
+            font-size: 0.85em;
+            font-weight: 700;
+            border-radius: 0.25rem;
+        }
+        
+        .status-available { background-color: var(--success-color); color: white; }
+        .status-inuse { background-color: var(--primary-color); color: white; }
+        .status-repair { background-color: var(--warning-color); color: #000; }
+        .status-loaned { background-color: var(--info-color); color: white; }
+        
+        .action-btn {
+            margin-right: 0.3rem;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 768px) {
+            .action-btn {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .filter-form .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <h1 class="h4 mb-3 mb-md-0 text-gray-800"><?= esc($title) ?></h1>
+                <div class="d-flex flex-column flex-md-row gap-2">
+                    <a href="/inventory/create" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i> Agregar nuevo
+                    </a>
+                    <a href="/inventory/report" class="btn btn-outline-secondary">
+                        <i class="fas fa-file-export me-1"></i> Generar reporte
+                    </a>
+                    <a href="/admin" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Atrás
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <form method="get" action="<?= base_url('/inventory') ?>" class="mb-4 row g-2 align-items-center filter-form">
+                    <div class="col-md-3 col-12 mb-2">
+                        <input type="text" name="search" value="<?= esc($search ?? '') ?>" class="form-control" placeholder="Buscar... (código, nombre)">
+                    </div>
+                    <div class="col-md-2 col-12 mb-2">
+                        <select name="status" class="form-select">
+                            <option value="">Estado (todos)</option>
+                            <option value="Disponible" <?= (isset($status) && $status === 'Disponible') ? 'selected' : '' ?>>Disponible</option>
+                            <option value="En uso" <?= (isset($status) && $status === 'En uso') ? 'selected' : '' ?>>En uso</option>
+                            <option value="En reparación" <?= (isset($status) && $status === 'En reparación') ? 'selected' : '' ?>>En reparación</option>
+                            <option value="Prestado" <?= (isset($status) && $status === 'Prestado') ? 'selected' : '' ?>>Prestado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-12 mb-2">
+                        <input type="text" name="responsible" value="<?= esc($responsible ?? '') ?>" class="form-control" placeholder="Responsable">
+                    </div>
+                    <div class="col-md-4 col-12 d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="fas fa-filter me-1"></i> Filtrar
+                        </button>
+                        <a href="<?= base_url('/inventory') ?>" class="btn btn-secondary flex-grow-1">
+                            <i class="fas fa-broom me-1"></i> Limpiar
+                        </a>
+                    </div>
+                </form>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="inventoryTable" width="100%" cellspacing="0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Ubicación</th>
+                                <th>Estado</th>
+                                <th>Responsable</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($items)): ?>
+                                <?php foreach ($items as $item): ?>
+                                    <tr>
+                                        <td><?= esc($item['id']) ?></td>
+                                        <td><?= esc($item['code']) ?></td>
+                                        <td><?= esc($item['name']) ?></td>
+                                        <td><?= esc($item['location']) ?></td>
+                                        <td>
+                                            <?php
+                                                $statusClass = 'status-available';
+                                                switch($item['status']) {
+                                                    case 'En uso': $statusClass = 'status-inuse'; break;
+                                                    case 'En reparación': $statusClass = 'status-repair'; break;
+                                                    case 'Prestado': $statusClass = 'status-loaned'; break;
+                                                }
+                                            ?>
+                                            <span class="status-badge <?= $statusClass ?>"><?= esc($item['status']) ?></span>
+                                        </td>
+                                        <td><?= esc($item['current_responsible']) ?></td>
+                                        <td class="text-nowrap">
+                                            <a href="/inventory/edit/<?= $item['id'] ?>" class="btn btn-warning btn-sm action-btn" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="/inventory/update-location/<?= $item['id'] ?>" class="btn btn-info btn-sm action-btn" title="Cambiar ubicación">
+                                                <i class="fas fa-location-arrow"></i>
+                                            </a>
+                                            <a href="/inventory/qr/<?= $item['id'] ?>" target="_blank" class="btn btn-secondary btn-sm action-btn" title="Ver QR">
+                                                <i class="fas fa-qrcode"></i>
+                                            </a>
+                                            <a href="/inventory/delete/<?= $item['id'] ?>" 
+                                               onclick="return confirm('¿Está seguro de eliminar este artículo?')" 
+                                               class="btn btn-danger btn-sm action-btn" title="Eliminar">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">No hay artículos registrados</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle con Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery y DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     
-    /* Estilos para la sección de usuarios */
-    .users-section { margin-top: 2rem; }
-    .users-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .users-table th, .users-table td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-    }
-    .users-table th {
-        background-color: #343a40;
-        color: white;
-    }
-    .users-table tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-    .users-table tr:hover {
-        background-color: #f1f1f1;
-    }
-    .action-btn {
-        padding: 0.4rem 0.8rem;
-        margin: 0 0.2rem;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .btn-edit { 
-        background-color: #ffc107; 
-        color: #212529;
-    }
-    .btn-delete { 
-        background-color: #dc3545; 
-        color: white;
-    }
-    .btn-create {
-        display: inline-block;
-        margin-top: 1.5rem;
-        background: #17a2b8;
-        color: white;
-        padding: 0.7rem 1.3rem;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: all 0.3s;
-    }
-    .btn-create:hover {
-        background: #138496;
-        transform: translateY(-2px);
-    }
-    .badge-role {
-        display: inline-block;
-        padding: 0.25em 0.6em;
-        border-radius: 10px;
-        font-size: 0.85em;
-        font-weight: bold;
-        color: white;
-    }
-    .badge-admin { background-color: #dc3545; }
-    .badge-coord { background-color: #6f42c1; }
-    .badge-client { background-color: #28a745; }
-    .badge-logistic { background-color: #fd7e14; }
-    .badge-security { background-color: #17a2b8; }
-    
-    /* Estilos para la tabla de inventario */
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .table th, .table td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-    }
-    .table th {
-        background-color: #343a40;
-        color: white;
-    }
-    .table tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-    .table tr:hover {
-        background-color: #f1f1f1;
-    }
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        border-radius: 0.2rem;
-    }
-    .btn-success {
-        background-color: #28a745;
-        color: white;
-    }
-    .btn-outline-secondary {
-        color: #6c757d;
-        border-color: #6c757d;
-    }
-    .btn-outline-secondary:hover {
-        background-color: #6c757d;
-        color: white;
-    }
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-    .btn-warning {
-        background-color: #ffc107;
-        color: #212529;
-    }
-    .btn-info {
-        background-color: #17a2b8;
-        color: white;
-    }
-    .btn-danger {
-        background-color: #dc3545;
-        color: white;
-    }
-    .form-control, .form-select {
-        padding: 0.375rem 0.75rem;
-        border: 1px solid #ced4da;
-        border-radius: 0.25rem;
-    }
-    .mb-3 {
-        margin-bottom: 1rem !important;
-    }
-    .mb-4 {
-        margin-bottom: 1.5rem !important;
-    }
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-right: -15px;
-        margin-left: -15px;
-    }
-    .col-auto {
-        flex: 0 0 auto;
-        width: auto;
-        max-width: 100%;
-        padding-right: 15px;
-        padding-left: 15px;
-    }
-    .align-items-center {
-        align-items: center !important;
-    }
-    .g-2 {
-        gap: 0.5rem !important;
-    }
-    .text-center {
-        text-align: center !important;
-    }
-</style>
-
-
-<h1><?= esc($title) ?></h1>
-
-<a href="/inventory/create" class="btn btn-success mb-3">Agregar nuevo</a>
-
-<a href="/inventory/report" class="btn btn-outline-secondary mb-3">Generar reporte</a>
-
-<a href="/admin" class="btn btn-outline-secondary mb-3">Atrás</a>
-
-
-
-
-<form method="get" action="<?= base_url('/inventory') ?>" class="mb-4 row g-2 align-items-center">
-    <div class="col-auto">
-        <input type="text" name="search" value="<?= esc($search ?? '') ?>" class="form-control" placeholder="Buscar... (código, nombre)">
-    </div>
-    <div class="col-auto">
-        <select name="status" class="form-select">
-            <option value="">Estado (todos)</option>
-            <option value="Disponible" <?= (isset($status) && $status === 'Disponible') ? 'selected' : '' ?>>Disponible</option>
-            <option value="En uso" <?= (isset($status) && $status === 'En uso') ? 'selected' : '' ?>>En uso</option>
-            <option value="En reparación" <?= (isset($status) && $status === 'En reparación') ? 'selected' : '' ?>>En reparación</option>
-            <option value="Prestado" <?= (isset($status) && $status === 'Prestado') ? 'selected' : '' ?>>Prestado</option>
-            <!-- Agrega más estados según tu sistema -->
-        </select>
-    </div>
-    <div class="col-auto">
-        <input type="text" name="responsible" value="<?= esc($responsible ?? '') ?>" class="form-control" placeholder="Responsable">
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Filtrar</button>
-        <a href="<?= base_url('/inventory') ?>" class="btn btn-secondary">Limpiar</a>
-    </div>
-</form>
-
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Nombre</th>
-            <th>Ubicación</th>
-            <th>Estado</th>
-            <th>Responsable</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (!empty($items)): ?>
-            <?php foreach ($items as $item): ?>
-                <tr>
-                    <td><?= esc($item['id']) ?></td>
-                    <td><?= esc($item['code']) ?></td>
-                    <td><?= esc($item['name']) ?></td>
-                    <td><?= esc($item['location']) ?></td>
-                    <td><?= esc($item['status']) ?></td>
-                    <td><?= esc($item['current_responsible']) ?></td>
-                    <td>
-                        <a href="/inventory/edit/<?= $item['id'] ?>" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="/inventory/update-location/<?= $item['id'] ?>" class="btn btn-info btn-sm">Boton de acción pendiente</a>
-                        <a href="/inventory/qr/<?= $item['id'] ?>" target="_blank" class="btn btn-secondary btn-sm">QR</a>
-                        <a href="/inventory/delete/<?= $item['id'] ?>" 
-                           onclick="return confirm('¿Está seguro de eliminar este artículo?')" 
-                           class="btn btn-danger btn-sm">Eliminar</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr><td colspan="7" class="text-center">No hay artículos registrados.</td></tr>
-        <?php endif; ?>
-    </tbody>
-</table>
+    <script>
+        $(document).ready(function() {
+            // Inicializar DataTable
+            $('#inventoryTable').DataTable({
+                responsive: true,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                },
+                dom: '<"top"<"row"<"col-md-6"l><"col-md-6"f>>>rt<"bottom"<"row"<"col-md-6"i><"col-md-6"p>>>',
+                initComplete: function() {
+                    $('.dataTables_filter input').addClass('form-control form-control-sm');
+                    $('.dataTables_length select').addClass('form-select form-select-sm');
+                }
+            });
+            
+            // Inicializar tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+</body>
+</html>

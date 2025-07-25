@@ -141,7 +141,7 @@
             <?php endforeach; ?>
         <?php endif; ?>
 
-        <form action="<?= base_url('/createUser') ?>" method="POST">
+        <form action="<?= base_url('createUser') ?>" method="POST">
             <div class="form-group">
                 <label for="username"><i class="fas fa-user"></i> Usuario:</label>
                 <input type="text" id="username" name="username" value="<?= old('username') ?>" required>

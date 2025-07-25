@@ -463,10 +463,12 @@
     <nav class="navbar">
     <a href="#" class="logo">
         <i class="fas fa-chair"></i>
-        EventMobiliario
+        EventSalones
     </a>
     <div class="nav-links">
-        <a href="#mobiliario">Ver sedes</a>
+        <a href="<?= base_url('sedes') ?>" class="nav-link">
+        <i class="fas fa-building"></i> Ver Sedes
+    </a>
         <a href="#servicios">Servicios</a>
         <a href="#contacto">Contacto</a>
         
@@ -501,7 +503,7 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1>Reserva el mobiliario perfecto para tu evento</h1>
+        <h1>Reserva nuestras sedes</h1>
         <p>Encuentra y reserva sillas, mesas y decoración para hacer de tu evento una ocasión inolvidable</p>
         <div class="search-bar">
             <input type="text" class="search-input" placeholder="Buscar mobiliario...">
