@@ -139,7 +139,8 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
+ <?php if(session('role') !== 'administrador'): ?>    
+<nav class="navbar">
         <a href="<?= base_url('/') ?>" class="logo">
             <i class="fas fa-chair"></i>
             EventMobiliario
@@ -151,6 +152,7 @@
             <a href="#contacto">Contacto</a>
         </div>
     </nav>
+    <?php endif; ?>
 
     <div class="container">
         <h1><i class="fas fa-plus-circle"></i> Crear Nueva Sede</h1>
@@ -164,52 +166,72 @@
         <?php endif; ?>
 
         <div class="form-container">
-            <form action="<?= base_url('sedes/guardar') ?>" method="post" id="sedeForm">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Nombre de la Sede</label>
-                    <input type="text" class="form-control" id="name" name="name" required 
-                           value="<?= old('name') ?>">
-                </div>
-                
-                <div class="mb-3">
-                    <label for="location" class="form-label">Dirección</label>
-                    <input type="text" class="form-control" id="location" name="location" required
-                           value="<?= old('location') ?>">
-                    <small class="text-muted">Comience a escribir y seleccione una dirección del listado</small>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="capacity" class="form-label">Capacidad</label>
-                    <input type="number" class="form-control" id="capacity" name="capacity" required
-                           value="<?= old('capacity') ?>">
-                </div>
-                
-                <input type="hidden" id="lat" name="lat" value="<?= old('lat') ?>">
-                <input type="hidden" id="lng" name="lng" value="<?= old('lng') ?>">
-                <input type="hidden" id="place_id" name="place_id" value="<?= old('place_id') ?>">
-                
-                <div class="mb-3">
-                    <div id="map">
-                        <div class="map-loading">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Cargando mapa...</span>
-                            </div>
-                            <p class="mt-2">Cargando mapa...</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between">
-                    <a href="<?= base_url('sedes') ?>" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Cancelar
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Guardar Sede
-                    </button>
-                </div>
-            </form>
+    <form action="<?= base_url('sedes/guardar') ?>" method="post" id="sedeForm">
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre de la Sede</label>
+            <input type="text" class="form-control" id="name" name="name" required 
+                   value="<?= old('name') ?>">
         </div>
+        
+        <!-- Campo de dirección con autocompletado -->
+        <div class="mb-3">
+            <label for="location" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="location" name="location" required
+                   value="<?= old('location') ?>">
+            <small class="text-muted">Escribe una dirección y selecciónala del listado</small>
+        </div>
+        
+        <!-- Campos manuales para coordenadas -->
+        <div class="row mb-3">
+    <div class="col-md-6">
+        <label for="lat" class="form-label">Latitud</label>
+        <input type="text" class="form-control" id="lat" name="lat" required
+               value="<?= old('lat') ?>">
+        <small class="text-muted">Ejemplo: 19.4326</small>
     </div>
+    <div class="col-md-6">
+        <label for="lng" class="form-label">Longitud</label>
+        <input type="text" class="form-control" id="lng" name="lng" required
+               value="<?= old('lng') ?>">
+        <small class="text-muted">Ejemplo: -99.1332</small>
+    </div>
+</div>
+        
+        <div class="mb-3">
+            <label for="capacity" class="form-label">Capacidad</label>
+            <input type="number" class="form-control" id="capacity" name="capacity" required
+                   value="<?= old('capacity') ?>">
+        </div>
+        
+        <!-- Mapa comentado (opcional para futuras implementaciones) -->
+        <!--
+        <div class="mb-3">
+            <div id="map">
+                <div class="map-loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando mapa...</span>
+                    </div>
+                    <p class="mt-2">Cargando mapa...</p>
+                </div>
+            </div>
+        </div>
+        -->
+        
+        <input type="hidden" id="place_id" name="place_id" value="<?= old('place_id') ?>">
+        
+        <div class="d-flex justify-content-between">
+            <a href="<?= base_url('sedes') ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar Sede
+            </button>
+        </div>
+    </form>
+</div>
+    </div>
+
+
 
     <footer id="contacto">
         <p class="copyright">© <?= date('Y') ?> EventMobiliario. Todos los derechos reservados.</p>
@@ -218,105 +240,122 @@
     <!-- Cargar Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+
+
+
     <!-- Script para manejar Google Maps -->
     <script>
-    // Solución para el error "initMap is not a function"
     window.initMap = function() {
-        console.log('Google Maps API cargada correctamente');
+    console.log('Google Maps API cargada correctamente');
+    
+    try {
+        const mapElement = document.getElementById('map');
+        mapElement.innerHTML = '';
         
-        try {
-            const mapElement = document.getElementById('map');
-            mapElement.innerHTML = '';
+        // Configuración inicial del mapa (centrado en México)
+        const initialPosition = { 
+            lat: 19.4326, 
+            lng: -99.1332 
+        };
+        
+        const map = new google.maps.Map(mapElement, {
+            center: initialPosition,
+            zoom: 12,
+            streetViewControl: true,
+            mapTypeControl: true,
+            fullscreenControl: true
+        });
+        
+        // Configurar autocompletado
+        const autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById("location"),
+            { 
+                types: ["geocode", "establishment"],
+                componentRestrictions: {country: "mx"},
+                fields: ["geometry", "formatted_address", "place_id"]
+            }
+        );
+        
+        let marker = null;
+        
+        // Manejar selección de lugar
+        autocomplete.addListener("place_changed", () => {
+            const place = autocomplete.getPlace();
             
-            // Crear mapa con configuración mejorada
-            const map = new google.maps.Map(mapElement, {
-                center: { lat: 19.4326, lng: -99.1332 },
-                zoom: 12,
-                streetViewControl: true,
-                mapTypeControl: true,
-                fullscreenControl: true
-            });
-            
-            // Configurar autocompletado con mejores parámetros
-            const autocomplete = new google.maps.places.Autocomplete(
-                document.getElementById("location"),
-                { 
-                    types: ["geocode", "establishment"],
-                    componentRestrictions: {country: "mx"},
-                    fields: ["geometry", "formatted_address", "place_id"]
-                }
-            );
-            
-            let marker;
-            
-            // Manejar selección de lugar
-            autocomplete.addListener("place_changed", () => {
-                const place = autocomplete.getPlace();
-                if (!place.geometry) {
-                    showMapError("No se encontró la ubicación seleccionada");
-                    return;
-                }
-                
-                // Ajustar vista del mapa
-                if (place.geometry.viewport) {
-                    map.fitBounds(place.geometry.viewport);
-                } else {
-                    map.setCenter(place.geometry.location);
-                    map.setZoom(17);
-                }
-                
-                // Colocar marcador
-                if (marker) marker.setMap(null);
-                
-                marker = new google.maps.Marker({
-                    map: map,
-                    position: place.geometry.location,
-                    draggable: true,
-                    animation: google.maps.Animation.DROP
-                });
-                
-                // Actualizar campos
-                updateLocationFields(
-                    place.geometry.location, 
-                    place.formatted_address,
-                    place.place_id
-                );
-                
-                // Manejar arrastre de marcador
-                marker.addListener("dragend", () => {
-                    reverseGeocode(marker.getPosition());
-                });
-            });
-            
-            // Permitir clicks en el mapa
-            map.addListener("click", (event) => {
-                if (marker) marker.setMap(null);
-                
-                marker = new google.maps.Marker({
-                    map: map,
-                    position: event.latLng,
-                    draggable: true,
-                    animation: google.maps.Animation.DROP
-                });
-                
-                reverseGeocode(event.latLng);
-            });
-            
-            // Si hay valores existentes, centrar el mapa allí
-            if (document.getElementById("lat").value && document.getElementById("lng").value) {
-                const savedPosition = {
-                    lat: parseFloat(document.getElementById("lat").value),
-                    lng: parseFloat(document.getElementById("lng").value)
-                };
-                map.setCenter(savedPosition);
-                map.setZoom(15);
+            if (!place.geometry) {
+                console.error("No se encontró geometría para el lugar seleccionado");
+                return;
             }
             
-        } catch (error) {
-            console.error("Error al inicializar mapa:", error);
-            showMapError("Error al cargar el mapa: " + error.message);
+            // Centrar el mapa en la ubicación seleccionada
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+            
+            // Eliminar marcador anterior si existe
+            if (marker) {
+                marker.setMap(null);
+            }
+            
+            // Crear nuevo marcador
+            marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                draggable: true
+            });
+            
+            // Actualizar campos ocultos
+            updateLocationFields(
+                place.geometry.location,
+                place.formatted_address,
+                place.place_id
+            );
+            
+            // Escuchar movimiento del marcador
+            marker.addListener("dragend", () => {
+                reverseGeocode(marker.getPosition());
+            });
+        });
+        
+        // Manejar clics en el mapa
+        map.addListener("click", (event) => {
+            if (marker) {
+                marker.setMap(null);
+            }
+            
+            marker = new google.maps.Marker({
+                map: map,
+                position: event.latLng,
+                draggable: true
+            });
+            
+            reverseGeocode(event.latLng);
+        });
+        
+        // Si hay valores existentes, centrar allí
+        const savedLat = document.getElementById("lat").value;
+        const savedLng = document.getElementById("lng").value;
+        
+        if (savedLat && savedLng) {
+            const savedPosition = new google.maps.LatLng(
+                parseFloat(savedLat),
+                parseFloat(savedLng)
+            );
+            
+            map.setCenter(savedPosition);
+            map.setZoom(15);
+            
+            marker = new google.maps.Marker({
+                map: map,
+                position: savedPosition,
+                draggable: true
+            });
         }
-    };
+        
+    } catch (error) {
+        console.error("Error al inicializar mapa:", error);
+        showMapError("Error al cargar el mapa. Por favor recarga la página.");
+    }
+};
 
     // Función para geocodificación inversa
     function reverseGeocode(position) {

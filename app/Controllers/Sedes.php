@@ -30,36 +30,49 @@ class Sedes extends BaseController
     }
 
     public function guardar()
-    {
-        $rules = [
-            'name' => 'required|min_length[3]',
-            'location' => 'required',
-            'capacity' => 'required|numeric',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'place_id' => 'permit_empty|string'
-        ];
-        
-        if (!$this->validate($rules)) {
-            return redirect()->back()
-                           ->withInput()
-                           ->with('errors', $this->validator->getErrors());
-        }
-        
-        $data = $this->request->getPost();
-        
-        // Asegurar que el rol sea cliente si no se especifica
-        $data['role'] = $data['role'] ?? 'cliente';
-        
-        if ($this->sedeModel->save($data)) {
-            return redirect()->to('/sedes')
-                           ->with('success', 'Sede creada exitosamente');
-        }
-        
+{
+    $rules = [
+        'name' => 'required|min_length[3]',
+        'location' => 'required',
+        'capacity' => 'required|numeric',
+        'lat' => 'required|decimal',
+        'lng' => 'required|decimal',
+        'place_id' => 'permit_empty|string'
+    ];
+    
+    $messages = [
+        'lat' => [
+            'decimal' => 'La latitud debe ser un valor decimal válido'
+        ],
+        'lng' => [
+            'decimal' => 'La longitud debe ser un valor decimal válido'
+        ]
+    ];
+    
+    if (!$this->validate($rules, $messages)) {
         return redirect()->back()
                        ->withInput()
-                       ->with('error', 'Error al guardar la sede');
+                       ->with('errors', $this->validator->getErrors());
     }
+    
+    $data = [
+        'name' => $this->request->getPost('name'),
+        'location' => $this->request->getPost('location'),
+        'capacity' => $this->request->getPost('capacity'),
+        'lat' => $this->request->getPost('lat'),
+        'lng' => $this->request->getPost('lng'),
+        'place_id' => $this->request->getPost('place_id')
+    ];
+    
+    if ($this->sedeModel->save($data)) {
+        return redirect()->to('/sedes')
+                       ->with('success', 'Sede creada exitosamente');
+    }
+    
+    return redirect()->back()
+                   ->withInput()
+                   ->with('error', 'Error al guardar la sede');
+}
 
     public function editar($id)
     {

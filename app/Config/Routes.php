@@ -60,6 +60,9 @@ $routes->group('inventory', function($routes) {
     $routes->get('delete/(:num)', 'Inventory::delete/$1');
     $routes->get('edit/(:num)', 'Inventory::edit/$1');
     $routes->post('update/(:num)', 'Inventory::update/$1');
+    $routes->get('reservas/test-inventory', 'Reservas::testInventory');
+    $routes->get('reservas/test-inventory', 'Reservas::testInventory');
+    $routes->get('test-inventory', 'Reservas::testInventory');
 });
 
 // -----------------------------
@@ -99,11 +102,12 @@ $routes->group('sedes', function($routes) {
 // -----------------------------
 $routes->group('eventos', function($routes) {
     $routes->get('/', 'Eventos::index', ['as' => 'eventos.index']);
+    $routes->get('eventos/eventosPorSede/(:num)', 'Eventos::eventosPorSede/$1');
     $routes->get('crear', 'Eventos::crear', ['as' => 'eventos.crear']);
     $routes->post('guardar', 'Eventos::guardar', ['as' => 'eventos.guardar']);
     $routes->get('editar/(:num)', 'Eventos::editar/$1', ['as' => 'eventos.editar']);
     $routes->post('actualizar/(:num)', 'Eventos::actualizar/$1', ['as' => 'eventos.actualizar']);
-    $routes->get('eliminar/(:num)', 'Eventos::eliminar/$1', ['as' => 'eventos.eliminar']);
+    $routes->post('eliminar/(:num)', 'Eventos::eliminar/$1', ['as' => 'eventos.eliminar']); // <-- aquí el cambio
     $routes->get('por-sede/(:num)', 'Eventos::eventosPorSede/$1', ['as' => 'eventos.por_sede']);
     $routes->get('ver/(:num)', 'Eventos::ver/$1', ['as' => 'eventos.ver']);
 });
@@ -112,14 +116,35 @@ $routes->group('eventos', function($routes) {
 // Reservas
 // -----------------------------
 $routes->group('reservas', ['filter' => 'auth'], function($routes) {
+    // Vista principal de reservas
     $routes->get('/', 'Reservas::index', ['as' => 'reservas.index']);
-    $routes->get('verReservas', 'Reservas::verReservas', ['as' => 'reservas.verReservas']); // Ruta especial para vista alternativa
-    $routes->get('ver/(:num)', 'Reservas::ver/$1', ['as' => 'reservas.ver']); // Detalles de una reserva específica
-    $routes->get('nueva', 'Reservas::nueva', ['as' => 'reservas.nueva']);
-    $routes->get('nueva/(:num)', 'Reservas::nueva/$1', ['as' => 'reservas.nueva_evento']);
-    $routes->post('guardar', 'Reservas::guardar', ['as' => 'reservas.guardar']);
-    $routes->post('confirmar/(:num)', 'Reservas::confirmar/$1', ['as' => 'reservas.confirmar']);
-    $routes->post('cancelar/(:num)', 'Reservas::cancelar/$1', ['as' => 'reservas.cancelar']);
+    
+    // Nueva ruta para crear reserva (directa)
+    $routes->get('crearReserva', 'Reservas::crearReserva', ['as' => 'reservas.crear_reserva']);
+    
+    // Rutas para reservas de eventos (bookings)
+    $routes->group('booking', function($routes) {
+        $routes->get('nueva', 'Reservas::nuevaBooking', ['as' => 'reservas.nueva_booking']);
+        $routes->post('guardar', 'Reservas::guardarBooking', ['as' => 'reservas.guardar_booking']);
+        $routes->get('editar/(:num)', 'Reservas::editarBooking/$1', ['as' => 'reservas.editar_booking']);
+        $routes->post('actualizar/(:num)', 'Reservas::actualizarBooking/$1', ['as' => 'reservas.actualizar_booking']);
+        $routes->post('cancelar/(:num)', 'Reservas::cancelarBooking/$1', ['as' => 'reservas.cancelar_booking']);
+        $routes->delete('eliminar/(:num)', 'Reservas::eliminarBooking/$1', ['as' => 'reservas.eliminar_booking']);
+    });
+    
+    // Rutas para reservas de artículos (reservations)
+    $routes->group('reservation', function($routes) {
+        $routes->get('nueva', 'Reservas::nuevaReservation', ['as' => 'reservas.nueva_reservation']);
+        $routes->post('guardar', 'Reservas::guardarReservation', ['as' => 'reservas.guardar_reservation']);
+        $routes->get('editar/(:num)', 'Reservas::editarReservation/$1', ['as' => 'reservas.editar_reservation']);
+        $routes->post('actualizar/(:num)', 'Reservas::actualizarReservation/$1', ['as' => 'reservas.actualizar_reservation']);
+        $routes->post('cancelar/(:num)', 'Reservas::cancelarReservation/$1', ['as' => 'reservas.cancelar_reservation']);
+        $routes->delete('eliminar/(:num)', 'Reservas::eliminarReservation/$1', ['as' => 'reservas.eliminar_reservation']);
+    });
+    
+    // Rutas comunes para ambos tipos
+    $routes->get('ver/(:num)/(booking|reservation)', 'Reservas::ver/$1/$2', ['as' => 'reservas.ver']);
+    $routes->post('confirmar/(:num)/(booking|reservation)', 'Reservas::confirmar/$1/$2', ['as' => 'reservas.confirmar']);
 });
 
 // -----------------------------

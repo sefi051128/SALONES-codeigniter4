@@ -49,6 +49,15 @@
                 <label class="form-label">Descripción</label>
                 <textarea name="description" class="form-control" rows="4"><?= esc($evento['description']) ?></textarea>
             </div>
+
+            <div class="mb-3">
+                <label class="form-label">Estado</label>
+                <select name="status" class="form-select" required>
+                    <option value="activo" <?= $evento['status'] === 'activo' ? 'selected' : '' ?>>Activo</option>
+                    <option value="cancelado" <?= $evento['status'] === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
+                    <option value="completado" <?= $evento['status'] === 'completado' ? 'selected' : '' ?>>Completado</option>
+                </select>
+            </div>
             
             <button type="submit" class="btn btn-primary">Actualizar Evento</button>
             <a href="<?= base_url('eventos') ?>" class="btn btn-secondary">Cancelar</a>

@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container py-5">
-        <h2>Crear Nuevo Evento</h2>
+        <h2><i class="fas fa-calendar-plus"></i> Crear Nuevo Evento</h2>
         
         <?php if(session()->getFlashdata('errors')): ?>
             <div class="alert alert-danger">
@@ -23,32 +23,52 @@
             <?= csrf_field() ?>
             
             <div class="mb-3">
-                <label class="form-label">Sede</label>
+                <label class="form-label"><i class="fas fa-building"></i> Sede</label>
                 <select name="venue_id" class="form-select" required>
                     <option value="">Seleccione una sede</option>
                     <?php foreach($sedes as $sede): ?>
-                        <option value="<?= $sede['id'] ?>"><?= esc($sede['name']) ?></option>
+                        <option value="<?= $sede['id'] ?>" <?= old('venue_id') == $sede['id'] ? 'selected' : '' ?>>
+                            <?= esc($sede['name']) ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
             
             <div class="mb-3">
-                <label class="form-label">Nombre del Evento</label>
-                <input type="text" name="name" class="form-control" required>
+                <label class="form-label"><i class="fas fa-heading"></i> Nombre del Evento</label>
+                <input type="text" name="name" class="form-control" value="<?= old('name') ?>" required>
             </div>
             
             <div class="mb-3">
-                <label class="form-label">Fecha y Hora</label>
-                <input type="datetime-local" name="date" class="form-control" required>
+                <label class="form-label"><i class="fas fa-calendar-day"></i> Fecha y Hora</label>
+                <input type="datetime-local" name="date" class="form-control" 
+                       value="<?= old('date') ?>" required>
             </div>
             
             <div class="mb-3">
-                <label class="form-label">Descripción</label>
-                <textarea name="description" class="form-control" rows="4"></textarea>
+                <label class="form-label"><i class="fas fa-align-left"></i> Descripción</label>
+                <textarea name="description" class="form-control" rows="4"><?= old('description') ?></textarea>
             </div>
             
-            <button type="submit" class="btn btn-primary">Guardar Evento</button>
-            <a href="<?= base_url('eventos') ?>" class="btn btn-secondary">Cancelar</a>
+            <!-- Nuevo campo para el estado -->
+            <div class="mb-3">
+                <label class="form-label"><i class="fas fa-info-circle"></i> Estado</label>
+                <select name="status" class="form-select" required>
+                    <option value="">Seleccione un estado</option>
+                    <option value="activo" <?= old('status') == 'activo' ? 'selected' : '' ?>>Activo</option>
+                    <option value="inactivo" <?= old('status') == 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
+                    <option value="cancelado" <?= old('status') == 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
+                </select>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar Evento
+                </button>
+                <a href="<?= base_url('eventos') ?>" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
         </form>
     </div>
 

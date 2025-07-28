@@ -10,6 +10,28 @@ use CodeIgniter\I18n\Time;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        .badge-status {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.badge-activo {
+    background-color: #198754; /* verde */
+    color: white;
+}
+
+.badge-cancelado {
+    background-color: #dc3545; /* rojo */
+    color: white;
+}
+
+.badge-completado {
+    background-color: #0d6efd; /* azul */
+    color: white;
+}
+
         .event-card {
             transition: all 0.3s ease;
             margin-bottom: 20px;
@@ -58,13 +80,28 @@ use CodeIgniter\I18n\Time;
 <?php endif; ?>
 
         <!-- Listado de eventos -->
-        <h3 class="mb-4"><i class="fas fa-calendar-days"></i> Eventos programados</h3>
-         <a href="/sedes" class="btn btn-outline-secondary mb-3">
+ <h3 class="mb-4"><i class="fas fa-calendar-days"></i> Eventos programados</h3>
+
+<div class="mb-3 d-flex flex-wrap gap-2">
+    <a href="/sedes" class="btn btn-outline-secondary">
         <i class="fas fa-arrow-left"></i> Atrás
     </a>
-   <a href="<?= base_url('reservas/verReservas') ?>" class="btn btn-outline-secondary mb-3">
-    <i class="fas fa-calendar-check"></i> Ver Reservas Especiales
-</a>
+    <a href="<?= base_url('reservas/verReservas') ?>" class="btn btn-outline-secondary">
+        <i class="fas fa-calendar-check"></i> Ver Reservas Especiales
+    </a>
+    <?php if (session('role') === 'administrador'): ?>
+    <a href="<?= base_url('eventos/crear') ?>" class="btn btn-success">
+        <i class="fas fa-plus"></i> Crear Nuevo Evento
+    </a>
+
+    <!-- Nuevo botón Reservar -->
+    <a href="<?= base_url('reservas') ?>" class="btn btn-primary">
+        <i class="fas fa-calendar-check"></i> Ver todas las Reservas
+    </a>
+<?php endif; ?>
+
+</div>
+
     
          
         
@@ -78,18 +115,32 @@ use CodeIgniter\I18n\Time;
                     <div class="col-md-6">
                         <div class="card event-card">
                             <div class="event-header">
-                                <h4><?= esc($event['name']) ?></h4>
-                            </div>
+    <div class="d-flex justify-content-between align-items-center">
+        <h4><?= esc($event['name']) ?></h4>
+        <span class="badge-status 
+            <?php
+                switch ($event['status']) {
+                    case 'activo': echo 'badge-activo'; break;
+                    case 'cancelado': echo 'badge-cancelado'; break;
+                    case 'completado': echo 'badge-completado'; break;
+                    default: echo 'bg-secondary text-white';
+                }
+            ?>">
+            <?= ucfirst($event['status']) ?>
+        </span>
+    </div>
+</div>
+
                             <div class="card-body">
                                 <div class="d-flex justify-content-between mb-3">
                                     <span class="event-date">
                                         <i class="fas fa-clock"></i> <?= Time::parse($event['date'])->toLocalizedString('MMM d, yyyy h:mm a') ?>
                                     </span>
-                                   <?php if(session('role') === 'cliente'): ?>
+                                 
     <a href="<?= site_url('reservas/nueva/'.$event['id']) ?>" class="btn btn-sm btn-success">
     <i class="fas fa-calendar-check"></i> Reservar
 </a>
-<?php endif; ?>
+
                                 </div>
                                 
                                 <p class="card-text"><?= esc($event['description']) ?></p>
@@ -103,9 +154,13 @@ use CodeIgniter\I18n\Time;
                                             <a href="<?= base_url('eventos/editar/'.$event['id']) ?>" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
-                                            <button class="btn btn-sm btn-danger btn-delete-event" data-event-id="<?= $event['id'] ?>">
-                                                <i class="fas fa-trash-alt"></i> Eliminar
-                                            </button>
+                                            <form action="<?= base_url('eventos/eliminar/'.$event['id']) ?>" method="post" style="display:inline;" onsubmit="return confirm('¿Seguro que quieres eliminar este evento?');">
+    <?= csrf_field() ?>
+    <button type="submit" class="btn btn-sm btn-danger">
+        <i class="fas fa-trash-alt"></i> Eliminar
+    </button>
+</form>
+
                                         </div>
                                     <?php endif; ?>
                                 </div>

@@ -61,11 +61,12 @@ class Eventos extends BaseController
     public function guardar()
     {
         $rules = [
-            'venue_id' => 'required|numeric',
-            'name' => 'required|min_length[3]|max_length[255]',
-            'date' => 'required|valid_date',
-            'description' => 'permit_empty|string'
-        ];
+    'venue_id' => 'required|numeric',
+    'name' => 'required|min_length[3]|max_length[255]',
+    'date' => 'required|valid_date',
+    'description' => 'permit_empty|string',
+    'status' => 'required|in_list[activo,cancelado,completado]'
+];
 
         if (!$this->validate($rules)) {
             return redirect()->back()
@@ -74,11 +75,12 @@ class Eventos extends BaseController
         }
 
         $data = [
-            'venue_id' => $this->request->getPost('venue_id'),
-            'name' => $this->request->getPost('name'),
-            'date' => $this->request->getPost('date'),
-            'description' => $this->request->getPost('description')
-        ];
+    'venue_id' => $this->request->getPost('venue_id'),
+    'name' => $this->request->getPost('name'),
+    'date' => $this->request->getPost('date'),
+    'description' => $this->request->getPost('description'),
+    'status' => $this->request->getPost('status')
+];
 
         if ($this->eventoModel->save($data)) {
             session()->setFlashdata('success', 'Evento creado exitosamente');
@@ -109,11 +111,12 @@ class Eventos extends BaseController
     public function actualizar($id)
     {
         $rules = [
-            'venue_id' => 'required|numeric',
-            'name' => 'required|min_length[3]|max_length[255]',
-            'date' => 'required|valid_date',
-            'description' => 'permit_empty|string'
-        ];
+    'venue_id' => 'required|numeric',
+    'name' => 'required|min_length[3]|max_length[255]',
+    'date' => 'required|valid_date',
+    'description' => 'permit_empty|string',
+    'status' => 'required|in_list[activo,cancelado,completado]'
+];
 
         if (!$this->validate($rules)) {
             return redirect()->back()
@@ -122,12 +125,13 @@ class Eventos extends BaseController
         }
 
         $data = [
-            'id' => $id,
-            'venue_id' => $this->request->getPost('venue_id'),
-            'name' => $this->request->getPost('name'),
-            'date' => $this->request->getPost('date'),
-            'description' => $this->request->getPost('description')
-        ];
+    'id' => $id,
+    'venue_id' => $this->request->getPost('venue_id'),
+    'name' => $this->request->getPost('name'),
+    'date' => $this->request->getPost('date'),
+    'description' => $this->request->getPost('description'),
+    'status' => $this->request->getPost('status')
+];
 
         if ($this->eventoModel->save($data)) {
             session()->setFlashdata('success', 'Evento actualizado exitosamente');
