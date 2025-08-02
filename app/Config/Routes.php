@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 // Página principal (para clientes o sin login)
 $routes->get('/', 'Home::inicio');
 
-// Login y registro
+// Móddulo de Login y registro
 $routes->get('/login', 'AuthController::login');
 $routes->post('/login', 'AuthController::attemptLogin');
 $routes->get('/register', 'AuthController::register');
@@ -47,7 +47,7 @@ $routes->group('seguridad', ['filter' => 'auth:seguridad'], function($routes) {
     $routes->get('dashboard', 'Seguridad::dashboard', ['as' => 'seguridad.dashboard']);
 });
 // -----------------------------
-// CRUD de Inventario
+// Módulo CRUD de Inventario
 // -----------------------------
 $routes->group('inventory', function($routes) {
     $routes->get('/', 'Inventory::index');
@@ -66,7 +66,7 @@ $routes->group('inventory', function($routes) {
 });
 
 // -----------------------------
-// CRUD de Usuarios
+// Módulo CRUD de Usuarios
 // -----------------------------
 $routes->group('users', ['filter' => 'auth:administrador'], function($routes) {
     $routes->get('/', 'User::index');
@@ -86,7 +86,7 @@ $routes->group('users', ['filter' => 'auth:administrador'], function($routes) {
 });
 
 // -----------------------------
-// Sedes
+// Módulo de Sedes
 // -----------------------------
 $routes->group('sedes', function($routes) {
     $routes->get('/', 'Sedes::index');
@@ -98,7 +98,7 @@ $routes->group('sedes', function($routes) {
 });
 
 // -----------------------------
-// Eventos
+// Módulo de Eventos
 // -----------------------------
 $routes->group('eventos', function($routes) {
     $routes->get('/', 'Eventos::index', ['as' => 'eventos.index']);
@@ -113,7 +113,7 @@ $routes->group('eventos', function($routes) {
 });
 
 // -----------------------------
-// Reservas
+// Módulo de Reservas
 // -----------------------------
 $routes->group('reservas', ['filter' => 'auth'], function($routes) {
     // Vista principal de reservas
@@ -145,6 +145,139 @@ $routes->group('reservas', ['filter' => 'auth'], function($routes) {
     // Rutas comunes para ambos tipos
     $routes->get('ver/(:num)/(booking|reservation)', 'Reservas::ver/$1/$2', ['as' => 'reservas.ver']);
     $routes->post('confirmar/(:num)/(booking|reservation)', 'Reservas::confirmar/$1/$2', ['as' => 'reservas.confirmar']);
+
+    $routes->get('reservas/liberar-items/(:num)', 'Reservas::releaseItems/$1', ['as' => 'reservas.liberarItems']);
+
+});
+
+// -----------------------------
+// Módulo de Devoluciones
+// -----------------------------
+$routes->group('devoluciones', ['filter' => 'auth'], function($routes) {
+    // Pantalla principal de devoluciones / checklists pendientes
+    $routes->get('/', 'Devoluciones::index', ['as' => 'devoluciones.index']);
+
+    // Crear checklist de devolución para un evento específico
+    $routes->get('crear/(:num)', 'Devoluciones::crear/$1', ['as' => 'devoluciones.crear']);
+
+    // Guardar checklist (entrega/devolución)
+    $routes->post('guardar', 'Devoluciones::guardar', ['as' => 'devoluciones.guardar']);
+
+    // Ver checklists ya capturados para un evento
+    $routes->get('ver/(:num)', 'Devoluciones::ver/$1', ['as' => 'devoluciones.ver']);
+
+    $routes->get('cliente/(:num)', 'Devoluciones::clienteForm/$1', ['as' => 'devoluciones.cliente_form']);
+$routes->post('cliente/guardar', 'Devoluciones::guardarClienteChecklist', ['as' => 'devoluciones.cliente_guardar']);
+});
+
+// -----------------------------
+// Módulo de Chat Interno
+// -----------------------------
+$routes->group('chat', ['filter' => 'auth'], function($routes) {
+    // pantalla principal del chat
+    $routes->get('', 'Chat::index');
+
+    // ver una conversación específica (por id de conversación)
+    $routes->get('conversacion/(:num)', 'Chat::conversacion/$1');
+
+    // enviar mensaje (puede venir por POST desde el form)
+    $routes->post('enviar', 'Chat::enviar');
+
+    // opcional: marcar como leído, obtener usuarios, etc., más adelante
+});
+
+
+
+// -----------------------------
+// Módulo de Sistema de Alertas
+// -----------------------------
+$routes->group('alertas', ['filter' => 'auth'], function($routes) {
+    // Ruta principal (a donde lleva el botón)
+    $routes->get('/', 'Alertas::inicio', ['as' => 'alertas']);
+    
+    // Creación
+    $routes->get('crear', 'Alertas::crear');
+    $routes->post('guardar', 'Alertas::guardar');
+    
+    // Edición
+    $routes->get('editar/(:num)', 'Alertas::editar/$1');
+    $routes->post('actualizar/(:num)', 'Alertas::actualizar/$1');
+    
+    // Resolución
+    $routes->get('resolver/(:num)', 'Alertas::resolver/$1');
+    
+    // Reportes (solo admin)
+    $routes->group('', ['filter' => 'role:administrador'], function($routes) {
+        $routes->get('reportes', 'Alertas::reportes');
+    });
+
+    // Reporte PDF
+    $routes->get('reporte', 'Alertas::reporte');
+});
+
+// -----------------------------
+// Módulo de Accesos al Almacén
+// -----------------------------
+$routes->group('almacen', ['filter' => 'auth'], function($routes) {
+    // Ruta principal (listado)
+    $routes->get('/', 'Almacen::index', ['as' => 'almacen']);
+    
+    // Creación de accesos
+    $routes->get('nuevo', 'Almacen::nuevo', ['as' => 'almacen.nuevo']);
+    $routes->post('guardar', 'Almacen::guardar', ['as' => 'almacen.guardar']);
+    
+    // Reporte PDF (accesible para cualquier usuario autenticado)
+    $routes->get('reporte', 'Almacen::reporte', ['as' => 'almacen.reporte']);
+    
+    // Otras rutas de reportes (solo para administradores si las tienes)
+    $routes->group('', ['filter' => 'role:administrador'], function($routes) {
+        $routes->get('reportes', 'Almacen::reportes', ['as' => 'almacen.reportes']);
+    });
+});
+
+// -----------------------------
+// Módulo de Reportes
+// -----------------------------
+$routes->group('reportes', ['filter' => 'auth'], function($routes) {
+    // Listado principal
+    $routes->get('/', 'Reportes::index', ['as' => 'reportes']);
+    
+    // Creación
+    $routes->get('nuevo', 'Reportes::nuevo', ['as' => 'reportes.nuevo']);
+    $routes->post('guardar', 'Reportes::guardar', ['as' => 'reportes.guardar']);
+    
+    // Edición
+    $routes->get('editar/(:num)', 'Reportes::editar/$1', ['as' => 'reportes.editar']);
+    $routes->post('actualizar/(:num)', 'Reportes::actualizar/$1', ['as' => 'reportes.actualizar']);
+    
+    // Eliminación
+    $routes->get('eliminar/(:num)', 'Reportes::eliminar/$1', ['as' => 'reportes.eliminar']);
+    
+    // Reportes especiales (solo para administradores)
+    $routes->group('', ['filter' => 'role:administrador'], function($routes) {
+        $routes->get('exportar', 'Reportes::exportar', ['as' => 'reportes.exportar']);
+    });
+
+    // Generación de PDF
+    $routes->get('generar-pdf', 'Reportes::generarPdf');
+});
+
+// -----------------------------
+// Módulo de Notificaciones
+// -----------------------------
+$routes->group('notificaciones', ['filter' => 'auth'], function($routes) {
+    // Listado principal
+    $routes->get('/', 'Notificaciones::index', ['as' => 'notificaciones']);
+    
+    // Creación
+    $routes->get('crear', 'Notificaciones::crear', ['as' => 'notificaciones.crear']);
+    $routes->post('guardar', 'Notificaciones::guardar', ['as' => 'notificaciones.guardar']);
+    
+    // Visualización
+    $routes->get('ver/(:num)', 'Notificaciones::ver/$1', ['as' => 'notificaciones.ver']);
+    
+    // Eliminación
+    $routes->get('eliminar/(:num)', 'Notificaciones::eliminar/$1', ['as' => 'notificaciones.eliminar']);
 });
 
 // -----------------------------

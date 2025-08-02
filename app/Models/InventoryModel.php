@@ -7,7 +7,7 @@ class InventoryModel extends Model
 {
     protected $table = 'inventory_items';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['code', 'name', 'location', 'status', 'current_responsible', 'imagen', 'descripcion'];
+    protected $allowedFields = ['code', 'name', 'location', 'status', 'current_responsible', 'imagen', 'descripcion', 'booking_id'];
     protected $returnType = 'array';
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
@@ -66,4 +66,41 @@ class InventoryModel extends Model
     {
         return $this->where('status', self::STATUS_AVAILABLE)->findAll();
     }
+
+    /**
+ * Asigna items a una reserva (actualiza booking_id)
+ */
+public function assignToBooking(array $itemIds, int $bookingId)
+{
+    return $this->whereIn('id', $itemIds)
+               ->where('status', self::STATUS_AVAILABLE)
+               ->set([
+                   'booking_id' => $bookingId,
+                   'status' => self::STATUS_IN_USE,
+                   'updated_at' => date('Y-m-d H:i:s')
+               ])
+               ->update();
+}
+
+/**
+ * Libera items de una reserva (booking_id = NULL)
+ */
+public function releaseFromBooking(int $bookingId)
+{
+    return $this->where('booking_id', $bookingId)
+               ->set([
+                   'booking_id' => null,
+                   'status' => self::STATUS_AVAILABLE,
+                   'updated_at' => date('Y-m-d H:i:s')
+               ])
+               ->update();
+}
+
+/**
+ * Obtiene items por ID de reserva
+ */
+public function getByBookingId(int $bookingId)
+{
+    return $this->where('booking_id', $bookingId)->findAll();
+}
 }

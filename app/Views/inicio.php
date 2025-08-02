@@ -465,6 +465,8 @@
         <i class="fas fa-chair"></i>
         EventSalones
     </a>
+
+
     <div class="nav-links">
         <a href="<?= base_url('sedes') ?>" class="nav-link">
         <i class="fas fa-building"></i> Ver Sedes

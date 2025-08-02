@@ -195,6 +195,15 @@
                value="<?= old('lng') ?>">
         <small class="text-muted">Ejemplo: -99.1332</small>
     </div>
+    <div>
+    <a href="https://www.todopuebla.com/" 
+   class="btn btn-primary" 
+   target="_blank" 
+   rel="noopener noreferrer">
+    <i class="fas fa-map-marker-alt me-1"></i> Buscar coordenadas
+</a>
+</div>
+
 </div>
         
         <div class="mb-3">

@@ -54,8 +54,8 @@ use CodeIgniter\I18n\Time;
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1><i class="fas fa-calendar-check"></i> <?= esc($title) ?></h1>
             <div>
-                <a href="<?= base_url('eventos') ?>" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Volver a Eventos
+                <a href="<?= base_url('/sedes') ?>" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Atrás
                 </a>
                 <?php if (session('role') === 'administrador' || session('role') === 'cliente'): ?>
                     <a href="<?= base_url('reservas/reservation/nueva') ?>" class="btn btn-success">
@@ -84,6 +84,9 @@ use CodeIgniter\I18n\Time;
         <a href="<?= base_url('reservas/crearReserva') ?>" class="btn btn-primary">
             <i class="fas fa-plus"></i> Crear Nueva Reserva de Evento
         </a>
+        <a href="<?= route_to('devoluciones.index') ?>" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Ver devoluciones
+</a>
     </div>
 <?php endif; ?>
 
@@ -115,33 +118,34 @@ use CodeIgniter\I18n\Time;
                                         </div>
                                     </div>
                                     <div class="card-footer action-buttons">
-                                        <a href="<?= site_url('reservas/ver/'.$booking['id'].'/booking') ?>" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </a>
-                                        
-                                        <?php if ((session('role') === 'administrador' || session('user_id') == $booking['user_id']) && $booking['status'] != 'cancelled'): ?>
-                                            <a href="<?= site_url('reservas/editar/'.$booking['id'].'/booking') ?>" class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit"></i> Editar
-                                            </a>
-                                            
-                                            <form action="<?= site_url('reservas/cancelar/'.$booking['id'].'/booking') ?>" method="post" style="display:inline;">
-                                                <?= csrf_field() ?>
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de cancelar esta reserva?')">
-                                                    <i class="fas fa-times"></i> Cancelar
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-                                        
-                                        <?php if (session('role') === 'administrador'): ?>
-                                            <form action="<?= site_url('reservas/eliminar/'.$booking['id'].'/booking') ?>" method="post" style="display:inline;">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="btn btn-sm btn-dark" onclick="return confirm('¿Estás seguro de eliminar permanentemente esta reserva?')">
-                                                    <i class="fas fa-trash"></i> Eliminar
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-                                    </div>
+    <a href="<?= route_to('reservas.ver', $booking['id'], 'booking') ?>" class="btn btn-sm btn-primary">
+        <i class="fas fa-eye"></i> Ver
+    </a>
+
+    <?php if ((session('role') === 'administrador' || session('user_id') == $booking['user_id']) && $booking['status'] != 'cancelled'): ?>
+        <a href="<?= route_to('reservas.editar_booking', $booking['id']) ?>" class="btn btn-sm btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+
+        <form action="<?= route_to('reservas.cancelar_booking', $booking['id']) ?>" method="post" style="display:inline;">
+            <?= csrf_field() ?>
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de cancelar esta reserva?')">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+        </form>
+    <?php endif; ?>
+
+    <?php if (session('role') === 'administrador'): ?>
+        <form action="<?= route_to('reservas.eliminar_booking', $booking['id']) ?>" method="post" style="display:inline;">
+            <?= csrf_field() ?>
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-sm btn-dark" onclick="return confirm('¿Estás seguro de eliminar permanentemente esta reserva?')">
+                <i class="fas fa-trash"></i> Eliminar
+            </button>
+        </form>
+    <?php endif; ?>
+</div>
+
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -150,70 +154,68 @@ use CodeIgniter\I18n\Time;
             </div>
 
             <!-- Reservas de Artículos -->
-            <div class="tab-pane fade" id="articleReservations">
-                <?php if (empty($articleReservations)): ?>
-                    <div class="alert alert-info">No hay reservas de artículos registradas</div>
-                <?php else: ?>
-                    <div class="row">
-                        <?php foreach ($articleReservations as $reservation): ?>
-                            <div class="col-md-6 mb-4">
-                                <div class="card reservation-card">
-                                    <div class="reservation-header">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h5>Reserva #<?= $reservation['id'] ?></h5>
-                                            <span class="badge-status badge-<?= $reservation['status'] ?>">
-                                                <?= ucfirst($reservation['status']) ?>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p><i class="fas fa-user"></i> <strong>Cliente:</strong> <?= esc($reservation['customer_name'] ?? 'N/A') ?></p>
-                                                <p><i class="fas fa-calendar-day"></i> <strong>Fecha:</strong> <?= Time::parse($reservation['reservation_date'])->toLocalizedString('MMM d, yyyy h:mm a') ?></p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p><i class="fas fa-boxes"></i> <strong>Artículos:</strong> <?= $reservation['items'] ? count(json_decode($reservation['items'])) : 0 ?></p>
-                                                <p><i class="fas fa-map-marker-alt"></i> <strong>Sede:</strong> <?= esc($reservation['venue_name'] ?? 'N/A') ?></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer action-buttons">
-                                        <a href="<?= site_url('reservas/ver/'.$reservation['id'].'/reservation') ?>" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </a>
-                                        
-                                        <?php if ((session('role') === 'administrador' || session('user_id') == $reservation['customer_id']) && $reservation['status'] != 'cancelled'): ?>
-                                            <a href="<?= site_url('reservas/editar/'.$reservation['id'].'/reservation') ?>" class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit"></i> Editar
-                                            </a>
-                                            
-                                            <form action="<?= site_url('reservas/cancelar/'.$reservation['id'].'/reservation') ?>" method="post" style="display:inline;">
-                                                <?= csrf_field() ?>
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de cancelar esta reserva?')">
-                                                    <i class="fas fa-times"></i> Cancelar
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-                                        
-                                        <?php if (session('role') === 'administrador'): ?>
-                                            <form action="<?= site_url('reservas/eliminar/'.$reservation['id'].'/reservation') ?>" method="post" style="display:inline;">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="btn btn-sm btn-dark" onclick="return confirm('¿Estás seguro de eliminar permanentemente esta reserva?')">
-                                                    <i class="fas fa-trash"></i> Eliminar
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-                                    </div>
+<div class="tab-pane fade" id="articleReservations">
+    <?php if (empty($articleReservations)): ?>
+        <div class="alert alert-info">No hay reservas de artículos registradas</div>
+    <?php else: ?>
+        <div class="row">
+            <?php foreach ($articleReservations as $reservation): ?>
+                <div class="col-md-6 mb-4">
+                    <div class="card reservation-card">
+                        <div class="reservation-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>Reserva #<?= $reservation['id'] ?></h5>
+                                <span class="badge-status badge-<?= $reservation['status'] ?>">
+                                    <?= ucfirst($reservation['status']) ?>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><i class="fas fa-user"></i> <strong>Cliente:</strong> <?= esc($reservation['customer_name'] ?? 'N/A') ?></p>
+                                    <p><i class="fas fa-calendar-day"></i> <strong>Fecha:</strong> <?= Time::parse($reservation['reservation_date'])->toLocalizedString('MMM d, yyyy h:mm a') ?></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><i class="fas fa-boxes"></i> <strong>Artículos:</strong> <?= $reservation['items'] ? count(json_decode($reservation['items'])) : 0 ?></p>
+                                    <p><i class="fas fa-map-marker-alt"></i> <strong>Sede:</strong> <?= esc($reservation['venue_name'] ?? 'N/A') ?></p>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
+                        <div class="card-footer action-buttons">
+                            <a href="<?= route_to('reservas.ver', $reservation['id'], 'reservation') ?>" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            
+                            <?php if ((session('role') === 'administrador' || session('user_id') == $reservation['customer_id']) && $reservation['status'] != 'cancelled'): ?>
+                                <a href="<?= route_to('reservas.editar_reservation', $reservation['id']) ?>" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                
+                                <form action="<?= route_to('reservas.cancelar_reservation', $reservation['id']) ?>" method="post" style="display:inline;">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de cancelar esta reserva?')">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                            
+                            <?php if (session('role') === 'administrador'): ?>
+                                <form action="<?= route_to('reservas.eliminar_reservation', $reservation['id']) ?>" method="post" style="display:inline;">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-sm btn-dark" onclick="return confirm('¿Estás seguro de eliminar permanentemente esta reserva?')">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-    </div>
+    <?php endif; ?>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

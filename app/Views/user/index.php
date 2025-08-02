@@ -55,18 +55,21 @@
 <body>
     <div class="container-fluid py-4">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-users-cog mr-2"></i><?= esc($title) ?>
-            </h1>
-            <div>
-                <a href="<?= base_url('admin') ?>" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
-                    <i class="fas fa-arrow-left fa-sm text-white-50"></i> Panel de Control
-                </a>
-                <a href="<?= base_url('users/create') ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                    <i class="fas fa-user-plus fa-sm text-white-50"></i> Nuevo Usuario
-                </a>
-            </div>
-        </div>
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-users-cog mr-2"></i><?= esc($title) ?>
+    </h1>
+    <div>
+        <a href="<?= base_url('admin') ?>" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Atrás
+        </a>
+        <button onclick="generarReporte()" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-file-pdf fa-sm text-white-50"></i> Generar Reporte
+        </button>
+        <a href="<?= base_url('users/create') ?>" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+            <i class="fas fa-user-plus fa-sm text-white-50"></i> Nuevo Usuario
+        </a>
+    </div>
+</div>
 
         <!-- Alertas -->
         <?php if (session()->getFlashdata('success')): ?>
@@ -221,6 +224,20 @@
                 window.location.href = e.target.href;
             }
         }
+
+        function generarReporte() {
+    // Obtener parámetros de filtro si los hay (puedes implementar filtros después)
+    const params = new URLSearchParams(window.location.search);
+    
+    // Construir la URL para el reporte
+    let url = '<?= base_url("users/exportar-pdf") ?>';
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+    
+    // Abrir en nueva pestaña
+    window.open(url, '_blank');
+}
     </script>
 </body>
 </html>

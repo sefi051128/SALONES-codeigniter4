@@ -86,18 +86,12 @@ use CodeIgniter\I18n\Time;
     <a href="/sedes" class="btn btn-outline-secondary">
         <i class="fas fa-arrow-left"></i> Atrás
     </a>
-    <a href="<?= base_url('reservas/verReservas') ?>" class="btn btn-outline-secondary">
-        <i class="fas fa-calendar-check"></i> Ver Reservas Especiales
-    </a>
+    
     <?php if (session('role') === 'administrador'): ?>
     <a href="<?= base_url('eventos/crear') ?>" class="btn btn-success">
         <i class="fas fa-plus"></i> Crear Nuevo Evento
     </a>
 
-    <!-- Nuevo botón Reservar -->
-    <a href="<?= base_url('reservas') ?>" class="btn btn-primary">
-        <i class="fas fa-calendar-check"></i> Ver todas las Reservas
-    </a>
 <?php endif; ?>
 
 </div>
@@ -137,7 +131,7 @@ use CodeIgniter\I18n\Time;
                                         <i class="fas fa-clock"></i> <?= Time::parse($event['date'])->toLocalizedString('MMM d, yyyy h:mm a') ?>
                                     </span>
                                  
-    <a href="<?= site_url('reservas/nueva/'.$event['id']) ?>" class="btn btn-sm btn-success">
+    <a href="<?= site_url('reservas/crearReserva/'.$event['id']) ?>" class="btn btn-sm btn-success">
     <i class="fas fa-calendar-check"></i> Reservar
 </a>
 

@@ -21,63 +21,281 @@
             --dark: #343a40;
             --gray: #6c757d;
             --success: #28a745;
+            --warning: #ffc107;
             --danger: #dc3545;
-            --border-radius: 0.375rem;
-            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --border-radius: 0.5rem;
+            --box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar mejorada */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .navbar-brand {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
         }
 
         .navbar-brand i {
+            color: var(--secondary);
             margin-right: 0.5rem;
         }
 
-        .nav-link.active {
+        .nav-link {
             font-weight: 500;
+            color: var(--dark);
+            padding: 0.5rem 1rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-link.active {
             color: var(--primary) !important;
         }
 
+        .nav-link.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 1rem;
+            right: 1rem;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1.5rem;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary);
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin: 0;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        /* Sede cards */
         .sede-card {
             transition: var(--transition);
             height: 100%;
             display: flex;
             flex-direction: column;
+            border: none;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
         }
 
         .sede-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 1rem 3rem rgba(0,0,0,0.175);
+            transform: translateY(-10px);
+            box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.15);
         }
 
         .card-header {
             background-color: var(--primary);
             color: white;
+            padding: 1.25rem;
+            border-bottom: none;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .sede-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
         .sede-info i {
             color: var(--primary);
-            width: 1.25rem;
+            width: 1.5rem;
             text-align: center;
-            margin-right: 0.5rem;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .card-footer {
+            background-color: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.25rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-secondary {
+            border-color: var(--gray);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
         }
 
         .btn-map {
             background-color: var(--secondary);
+            border-color: var(--secondary);
             color: white;
         }
 
         .btn-map:hover {
-            background-color: #e06c4b;
+            background-color: #e06b4d;
+            border-color: #e06b4d;
             color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Modals */
+        .modal-content {
+            border: none;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .modal-header {
+            background-color: var(--primary);
+            color: white;
+            border-bottom: none;
+            padding: 1.25rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .btn-close {
+            filter: invert(1);
         }
 
         .modal-map-container {
@@ -87,37 +305,114 @@
             overflow: hidden;
         }
 
+        /* Delete confirmation modal */
+        .delete-icon {
+            font-size: 3rem;
+            color: var(--danger);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-nav-link {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-nav-link:hover {
+            color: var(--secondary);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-icon {
+            color: white;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-icon:hover {
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                width: 100%;
+            }
+            
             .action-buttons .btn {
+                flex: 1;
+                min-width: 100%;
+            }
+            
+            .btn-group {
                 width: 100%;
                 margin-bottom: 0.5rem;
             }
             
             .btn-group .btn {
-                width: auto;
-                margin-bottom: 0;
+                flex: 1;
             }
         }
 
-        footer {
-            background-color: var(--dark);
-        }
-
-        .social-icons a {
-            color: white;
-            font-size: 1.2rem;
-            transition: var(--transition);
-        }
-
-        .social-icons a:hover {
-            color: var(--secondary);
+        @media (max-width: 576px) {
+            .card-footer-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-group {
+                margin-bottom: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-     <?php if(session('role') !== 'administrador'): ?>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <?php if(session('role') !== 'administrador'): ?>
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="<?= base_url('/') ?>">
                 <i class="fas fa-chair"></i>
@@ -143,11 +438,12 @@
                     <?php if (session('isLoggedIn')): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i><?= esc(session('username')) ?>
+                                <i class="fas fa-user-circle me-1"></i><?= esc(session('username')) ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="<?= base_url('profile') ?>">Mi Perfil</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('logout') ?>">Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url('profile') ?>"><i class="fas fa-user me-1"></i> Mi Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión</a></li>
                             </ul>
                         </li>
                     <?php else: ?>
@@ -165,51 +461,69 @@
 
     <!-- Main Content -->
     <main class="container my-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="/admin" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Atrás
+        <div class="page-header">
+            <div class="d-flex align-items-center">
+                <a href="/admin" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left me-1"></i> Atrás
+                </a>
+                <h1 class="page-title">Nuestras Sedes</h1>
+            </div>
+            
+            <?php if(session('role') === 'cliente'): ?>
+            <a href="<?= base_url('reservas/crearReserva') ?>" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Crear Nueva Reserva de Evento
             </a>
-            <h1 class="h2 text-center text-primary mb-0">Nuestras Sedes</h1>
-            <div class="d-none d-md-block" style="width: 116px;"></div> <!-- Spacer for alignment -->
+            <a href="<?= base_url('eventos') ?>" class="btn btn-info me-2">
+                        <i class="fas fa-calendar-alt me-1"></i> Ver todos los eventos
+                    </a>
+                    <?php endif; ?>
+
+            <?php if(session('role') === 'administrador'): ?>
+                <div class="d-flex align-items-center">
+                    <a href="<?= base_url('eventos') ?>" class="btn btn-info me-2">
+                        <i class="fas fa-calendar-alt me-1"></i> Ver todos los eventos
+                    </a>
+                    <a href="<?= base_url('/reservas') ?>" class="btn btn-info me-2">
+                        <i class="fas fa-calendar-alt me-1"></i> Ver todas las reservas
+                    </a>
+                    <a href="<?= base_url('sedes/crear') ?>" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i> Nueva Sede
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
         
         <?php if(session()->getFlashdata('success')): ?>
             <div class="alert alert-success alert-dismissible fade show">
-                <?= session()->getFlashdata('success') ?>
+                <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
-        
-        <?php if(session('role') === 'administrador'): ?>
-            <a href="<?= base_url('eventos') ?>" class="btn btn-sm btn-info">
-    <i class="fas fa-calendar-alt me-1"></i> Ver Todos los Eventos
-</a>
-
-            <div class="d-flex justify-content-end mb-4">
-                <a href="<?= base_url('sedes/crear') ?>" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> Agregar Nueva Sede
-                </a>
             </div>
         <?php endif; ?>
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <?php foreach ($sedes as $sede): ?>
             <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-header text-white">
-                        <h3 class="h5 mb-0"><?= esc($sede['name']) ?></h3>
+                <div class="card h-100 sede-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><?= esc($sede['name']) ?></h3>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
+                        <div class="sede-info">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span class="ms-2"><?= esc($sede['location']) ?></span>
+                            <span><?= esc($sede['location']) ?></span>
                         </div>
-                        <div class="d-flex align-items-center">
+                        <div class="sede-info">
                             <i class="fas fa-users"></i>
-                            <span class="ms-2">Capacidad: <?= number_format($sede['capacity']) ?> personas</span>
+                            <span>Capacidad: <?= number_format($sede['capacity']) ?> personas</span>
                         </div>
+                        <?php if(!empty($sede['description'])): ?>
+                        <div class="sede-info">
+                            <i class="fas fa-info-circle"></i>
+                            <span><?= esc($sede['description']) ?></span>
+                        </div>
+                        <?php endif; ?>
                     </div>
-                    <div class="card-footer bg-white">
+                    <div class="card-footer">
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
                             <div class="btn-group mb-2 mb-md-0">
                                 <button class="btn btn-sm btn-map view-map" 
@@ -218,16 +532,14 @@
                                         data-title="<?= esc($sede['name']) ?>">
                                     <i class="fas fa-map-marked-alt me-1"></i> Mapa
                                 </button>
-                               <a href="<?= base_url('eventos/por-sede/' . $sede['id']) ?>" class="btn btn-sm btn-info">
-    <i class="fas fa-calendar-alt me-1"></i> Eventos
-</a>
-
-
+                                <a href="<?= base_url('eventos/por-sede/' . $sede['id']) ?>" class="btn btn-sm btn-info">
+                                    <i class="fas fa-calendar-alt me-1"></i> Eventos
+                                </a>
                             </div>
                             
                             <?php if(session('role') === 'administrador'): ?>
-                                <div class="action-buttons d-flex flex-column flex-md-row">
-                                    <a href="<?= base_url('sedes/editar/'.$sede['id']) ?>" class="btn btn-sm btn-warning me-md-1 mb-1 mb-md-0">
+                                <div class="action-buttons">
+                                    <a href="<?= base_url('sedes/editar/'.$sede['id']) ?>" class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit me-1"></i> Editar
                                     </a>
                                     <button class="btn btn-sm btn-danger confirm-delete" 
@@ -259,7 +571,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
@@ -274,12 +588,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <i class="fas fa-exclamation-triangle text-danger mb-3" style="font-size: 3rem;"></i>
+                    <i class="fas fa-exclamation-triangle delete-icon"></i>
                     <p id="deleteConfirmText">¿Estás seguro que deseas eliminar esta sede?</p>
                     <p class="text-muted">Esta acción no se puede deshacer.</p>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-1"></i> Cancelar
                     </button>
                     <a id="deleteConfirmBtn" href="#" class="btn btn-danger">
@@ -291,36 +605,25 @@
     </div>
 
     <!-- Footer -->
-<?php if(session('role') !== 'administrador'): ?>
-<footer class="py-4 mt-5 bg-dark text-white" id="contacto">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center">
-                <ul class="nav justify-content-center mb-3">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="<?= base_url('/') ?>">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="<?= base_url('sedes') ?>">Sedes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#servicios">Servicios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#contacto">Contacto</a>
-                    </li>
-                </ul>
-                <div class="social-icons mb-3">
-                    <a href="#" class="mx-2"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="mx-2"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="mx-2"><i class="fab fa-twitter"></i></a>
-                </div>
-                <p class="mb-0">© <?= date('Y') ?> EventMobiliario. Todos los derechos reservados.</p>
+    <?php if(session('role') !== 'administrador'): ?>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-nav">
+                <a href="<?= base_url('/') ?>" class="footer-nav-link">Inicio</a>
+                <a href="<?= base_url('sedes') ?>" class="footer-nav-link">Sedes</a>
+                <a href="#servicios" class="footer-nav-link">Servicios</a>
+                <a href="#contacto" class="footer-nav-link">Contacto</a>
             </div>
+            <div class="social-icons">
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="copyright">© <?= date('Y') ?> EventMobiliario. Todos los derechos reservados.</p>
         </div>
-    </div>
-</footer>
-<?php endif; ?>
+    </footer>
+    <?php endif; ?>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -333,19 +636,32 @@
             center: position,
             zoom: 15,
             mapTypeControl: true,
-            streetViewControl: true
+            streetViewControl: true,
+            styles: [
+                {
+                    featureType: "poi",
+                    elementType: "labels",
+                    stylers: [{ visibility: "off" }]
+                }
+            ]
         });
         
         const marker = new google.maps.Marker({
             position: position,
             map: map,
-            title: title
+            title: title,
+            animation: google.maps.Animation.DROP
         });
         
         const infoWindow = new google.maps.InfoWindow({
-            content: `<h5>${title}</h5><p>${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}</p>`
+            content: `<h5 class="mb-1">${title}</h5><p class="mb-0 text-muted">${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}</p>`
         });
         
+        marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+        });
+        
+        // Open info window by default
         infoWindow.open(map, marker);
     }
 
@@ -364,9 +680,10 @@
                 
                 mapModal.show();
                 
+                // Small delay to ensure modal is visible before initializing map
                 setTimeout(() => {
                     initModalMap(lat, lng, title);
-                }, 500);
+                }, 300);
             });
         });
         
@@ -382,6 +699,13 @@
                 
                 deleteModal.show();
             });
+        });
+        
+        // Close map modal when clicking outside
+        document.getElementById('mapModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                mapModal.hide();
+            }
         });
     });
 

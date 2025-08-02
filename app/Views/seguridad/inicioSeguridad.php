@@ -1,60 +1,293 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title><?= esc($title) ?> - EventMobiliario</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        .sidebar {
+            position: sticky;
+            top: 20px;
+        }
+        .navbar-brand {
+            font-weight: 600;
+        }
+        .card-header {
+            font-weight: 500;
+        }
+        .list-group-item.active {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .alert-card {
+            transition: transform 0.2s;
+            border-left: 4px solid;
+        }
+        .alert-card:hover {
+            transform: translateY(-3px);
+        }
+        .security-badge {
+            font-size: 0.75rem;
+        }
+        @media (max-width: 767.98px) {
+            .sidebar {
+                position: static;
+                margin-bottom: 20px;
+            }
+            .navbar-text {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body class="bg-light">
+    <!-- Barra de navegación mejorada -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="#">EventMobiliario</a>
-            <span class="navbar-text ms-auto">
-                <i class="fas fa-user-shield me-2"></i><?= esc($user['username']) ?>
-            </span>
-            <a href="<?= site_url('logout') ?>" class="btn btn-outline-light ms-3">
-                <i class="fas fa-sign-out-alt"></i>
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-shield-alt me-2"></i>
+                <span>EventMobiliario</span>
             </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <div class="navbar-nav ms-auto align-items-center">
+                    <span class="nav-item navbar-text me-3">
+                        <i class="fas fa-user-shield me-1"></i><?= esc($user['username']) ?>
+                    </span>
+                    <a href="<?= site_url('logout') ?>" class="nav-link btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> Salir
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <div class="container my-5">
+    <!-- Contenido principal -->
+    <div class="container my-4 my-lg-5">
         <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <i class="fas fa-shield-alt me-2"></i>Menú Seguridad
+            <!-- Menú lateral - Versión responsiva -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="card shadow-sm sidebar">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <span>Menú Seguridad</span>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action active">
+                        <a href="#" class="list-group-item list-group-item-action active d-flex align-items-center">
                             <i class="fas fa-home me-2"></i>Inicio
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action">
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
                             <i class="fas fa-clipboard-check me-2"></i>Control de Accesos
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action">
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
                             <i class="fas fa-exclamation-triangle me-2"></i>Incidentes
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-camera me-2"></i>Monitoreo
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-file-alt me-2"></i>Reportes
+                        </a>
+                        <a href="<?= base_url('chat') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-comments me-2"></i>Chat Interno
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-9">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard de Seguridad
+            
+            <!-- Panel principal -->
+            <div class="col-lg-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <span>Dashboard de Seguridad</span>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Bienvenido, <?= esc($user['username']) ?></h5>
-                        <p class="card-text">Panel de control para el equipo de seguridad.</p>
-                        <!-- Contenido específico del dashboard aquí -->
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+                            <div>
+                                <h5 class="card-title mb-1">Bienvenido, <?= esc($user['username']) ?></h5>
+                                <p class="card-text text-muted mb-0">Panel de control para el equipo de seguridad</p>
+                            </div>
+                            <div class="mt-3 mt-md-0">
+                                <div class="d-flex gap-2">
+                                    <a href="#" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-bell me-1"></i> Alertas
+                                    </a>
+                                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-cog me-1"></i> Configuración
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tarjetas de estado -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="card border-primary h-100 alert-card border-left-warning">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="text-muted mb-2">Incidentes Hoy</h6>
+                                                <h3 class="mb-0">2</h3>
+                                                <small class="text-warning">1 sin resolver</small>
+                                            </div>
+                                            <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                                <i class="fas fa-exclamation-triangle text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-primary h-100 alert-card border-left-success">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="text-muted mb-2">Accesos Hoy</h6>
+                                                <h3 class="mb-0">47</h3>
+                                                <small class="text-success">+12% desde ayer</small>
+                                            </div>
+                                            <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                                <i class="fas fa-door-open text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-primary h-100 alert-card border-left-danger">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="text-muted mb-2">Alertas</h6>
+                                                <h3 class="mb-0">3</h3>
+                                                <small class="text-danger">1 crítica</small>
+                                            </div>
+                                            <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                                <i class="fas fa-bell text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sección de acciones rápidas -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 d-flex align-items-center">
+                                <i class="fas fa-bolt text-warning me-2"></i> Acciones rápidas
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-1"></i> Nuevo Reporte
+                                </a>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-user-lock me-1"></i> Control de Acceso
+                                </a>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-video me-1"></i> Ver Cámaras
+                                </a>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-file-export me-1"></i> Generar Reporte
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Sección de incidentes recientes -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0 d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle text-danger me-2"></i> Incidentes Recientes
+                                </h6>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Ver todos</a>
+                            </div>
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-bold">Acceso no autorizado</div>
+                                            <small class="text-muted">Área de almacén - 10:32 AM</small>
+                                        </div>
+                                        <span class="badge bg-danger security-badge">Crítico</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-bold">Visitante sin identificación</div>
+                                            <small class="text-muted">Entrada principal - 09:15 AM</small>
+                                        </div>
+                                        <span class="badge bg-warning security-badge">Medio</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-bold">Cámara desconectada</div>
+                                            <small class="text-muted">Estacionamiento - Ayer 5:45 PM</small>
+                                        </div>
+                                        <span class="badge bg-success security-badge">Bajo</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Sección de estado de sistemas -->
+                        <div>
+                            <h6 class="mb-3 d-flex align-items-center">
+                                <i class="fas fa-server text-primary me-2"></i> Estado de Sistemas
+                            </h6>
+                            <div class="row g-2">
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="p-3 bg-white rounded shadow-sm d-flex align-items-center">
+                                        <div class="me-3 text-success">
+                                            <i class="fas fa-circle-check fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">Sistema de CCTV</div>
+                                            <small class="text-muted">12/12 cámaras activas</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="p-3 bg-white rounded shadow-sm d-flex align-items-center">
+                                        <div class="me-3 text-success">
+                                            <i class="fas fa-circle-check fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">Control de Accesos</div>
+                                            <small class="text-muted">Operativo</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="p-3 bg-white rounded shadow-sm d-flex align-items-center">
+                                        <div class="me-3 text-warning">
+                                            <i class="fas fa-triangle-exclamation fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">Alarmas</div>
+                                            <small class="text-muted">Prueba pendiente</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

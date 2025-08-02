@@ -7,7 +7,7 @@ class ReservationModel extends Model
 {
     protected $table = 'reservations';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['customer_id', 'venue_id', 'item_id', 'event_id', 'items', 'reservation_date', 'status'];
+    protected $allowedFields = ['customer_id', 'venue_id', 'item_id', 'event_id', 'items', 'item_quantities', 'reservation_date', 'status'];
     protected $returnType = 'array';
     protected $useTimestamps = true;
     protected $createdField = 'created_at';

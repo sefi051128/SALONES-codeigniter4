@@ -83,6 +83,28 @@
                 margin-bottom: 0.5rem;
             }
         }
+
+        /* Efecto hover para todos los botones */
+    .nav-links .btn {
+        transition: all 0.3s ease;
+        min-width: 110px;
+        text-align: center;
+    }
+    .nav-links .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Responsividad mejorada */
+    @media (max-width: 768px) {
+        .nav-links {
+            gap: 0.5rem;
+        }
+        .nav-links .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
     </style>
 </head>
 <body>
@@ -96,25 +118,59 @@
                     <p class="mb-0"><strong>ID de Usuario:</strong> <?= esc(session('user_id')) ?></p>
                 </div>
                 <div class="col-md-4">
-                    <div class="d-flex flex-column flex-md-row justify-content-md-end gap-2 nav-links">
-                        <a href="<?= base_url('sedes') ?>" class="btn btn-info">
-                            <i class="fas fa-building me-1"></i> Sedes
-                        </a>
-                        <a href="<?= base_url('/inventory') ?>" class="btn btn-primary">
-                            <i class="fas fa-boxes me-1"></i> Inventario
-                        </a>
-                        <?php if (session('role') === 'administrador'): ?>
-                            <a href="<?= base_url('/users') ?>" class="btn btn-success">
-                                <i class="fas fa-users me-1"></i> Usuarios
-                            </a>
-                        <?php endif; ?>
-                        <a href="<?= base_url('/logout') ?>" class="btn btn-danger">
-                            <i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+   <div class="d-flex flex-column flex-md-row justify-content-md-end gap-2 nav-links">
+    <!-- Chat Interno - Azul más claro para diferenciar -->
+    <a href="<?= base_url('/chat') ?>" class="btn btn-info text-white">
+        <i class="fas fa-comment-dots me-1"></i> Chat
+    </a>   
+    
+    <!-- Sedes - Azul oscuro para ubicaciones -->
+    <a href="<?= base_url('sedes') ?>" class="btn btn-primary">
+        <i class="fas fa-location-dot me-1"></i> Sedes
+    </a>
+    
+    <!-- Inventario - Verde para gestión -->
+    <a href="<?= base_url('/inventory') ?>" class="btn btn-success">
+        <i class="fas fa-box-open me-1"></i> Inventario
+    </a>
+    
+    <!-- Alertas - Naranja/rojo para urgencia -->
+    <a href="<?= base_url('/alertas') ?>" class="btn btn-danger">
+        <i class="fas fa-circle-exclamation me-1"></i> Alertas
+    </a>
+    
+    <!-- Accesos - Púrpura para seguridad -->
+    <a href="<?= base_url('/almacen') ?>" class="btn btn-purple" style="background-color: #6f42c1; color: white;">
+        <i class="fas fa-key me-1"></i> Accesos
+    </a>
+    
+    <!-- Reportes - Gris oscuro para documentos -->
+    <a href="<?= base_url('/reportes') ?>" class="btn btn-dark">
+        <i class="fas fa-chart-bar me-1"></i> Reportes
+    </a>
+    
+    <!-- Notificaciones - Amarillo claro para avisos -->
+    <a href="<?= base_url('/notificaciones') ?>" class="btn btn-warning">
+        <i class="fas fa-bell-on me-1"></i> Notificaciones
+    </a>
+    
+    <?php if (session('role') === 'administrador'): ?>
+        <!-- Usuarios - Verde más oscuro para admin -->
+        <a href="<?= base_url('/users') ?>" class="btn btn-success" style="background-color: #198754;">
+            <i class="fas fa-user-gear me-1"></i> Usuarios
+        </a>
+    <?php endif; ?>
+    
+    <!-- Cerrar sesión - Rojo para acción crítica -->
+    <a href="<?= base_url('/logout') ?>" class="btn btn-danger">
+        <i class="fas fa-right-from-bracket me-1"></i> Salir
+    </a>
+</div>
+
+
+</div>
+</div>
+</div>
 
         <?php if (session('role') === 'administrador'): ?>
             <div class="card shadow mb-4">

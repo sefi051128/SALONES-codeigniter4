@@ -260,12 +260,40 @@ public function update($id)
 
 public function exportarPDF()
 {
-    // Obtener todos los usuarios
-    $users = $this->userModel->orderBy('id', 'DESC')->findAll();
-    
+    // Verificar autenticación
+    if (!session()->get('isLoggedIn')) {
+        return redirect()->to('/login');
+    }
+
+    // Obtener parámetros de filtro si los hay
+    $roleFilter = $this->request->getGet('role');
+    $searchTerm = $this->request->getGet('search');
+
+    // Construir la consulta
+    $builder = $this->userModel->builder();
+    $builder->select('users.*')->orderBy('id', 'DESC');
+
+    // Aplicar filtros
+    if ($roleFilter) {
+        $builder->where('role', $roleFilter);
+    }
+    if ($searchTerm) {
+        $builder->groupStart()
+            ->like('username', $searchTerm)
+            ->orLike('email', $searchTerm)
+            ->orLike('phone', $searchTerm)
+            ->groupEnd();
+    }
+
+    $users = $builder->get()->getResultArray();
+
     $data = [
         'title' => 'Reporte de Usuarios',
         'users' => $users,
+        'filtros' => [
+            'role' => $roleFilter,
+            'search' => $searchTerm
+        ],
         'generatedAt' => date('d/m/Y H:i:s')
     ];
     
@@ -276,6 +304,7 @@ public function exportarPDF()
     $options = new \Dompdf\Options();
     $options->set('isRemoteEnabled', true);
     $options->set('isHtml5ParserEnabled', true);
+    $options->set('defaultFont', 'Arial');
     
     $dompdf = new \Dompdf\Dompdf($options);
     $dompdf->loadHtml($html);
@@ -305,6 +334,8 @@ public function show($id = null)
         'generatedAt' => date('d/m/Y H:i:s')
     ]);
 }
+
+
 
     
 

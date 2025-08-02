@@ -51,4 +51,12 @@ class UserModel extends Model
     {
         return $this->update($id, $data);
     }
+
+    public function listarUsuariosParaChat(): array
+{
+    return $this->select('id, username, role')
+                ->orderBy('username', 'ASC')
+                ->findAll();
+}
+
 }
