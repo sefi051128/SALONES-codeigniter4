@@ -97,4 +97,23 @@ class Notificaciones extends BaseController
         return redirect()->to(site_url('notificaciones'))
                        ->with('error', 'Error al eliminar la notificación');
     }
+
+public function marcarLeida($id)
+{
+    $model = new \App\Models\NotificacionesModel();
+    
+    try {
+        $updated = $model->update($id, [
+            'read_at' => date('Y-m-d H:i:s')
+        ]);
+        
+        if ($updated) {
+            return redirect()->back()->with('success', 'Notificación marcada como leída');
+        }
+    } catch (\Exception $e) {
+        log_message('error', 'Error al marcar notificación: '.$e->getMessage());
+    }
+    
+    return redirect()->back()->with('error', 'No se pudo marcar como leída');
+}
 }

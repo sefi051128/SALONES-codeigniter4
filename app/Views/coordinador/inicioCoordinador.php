@@ -47,18 +47,29 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <div class="navbar-nav ms-auto align-items-center">
-                    <span class="nav-item navbar-text me-3">
-                        <i class="fas fa-users-cog me-1"></i><?= esc($user['username']) ?>
-                    </span>
-                    <a href="<?= site_url('logout') ?>" class="nav-link btn btn-outline-light btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> Salir
-                    </a>
-                </div>
+            <div class="navbar-nav ms-auto align-items-center">
+    <!-- Botón de Alertas (prioritario para coordinadores) -->
+    <a href="<?= base_url('/alertas') ?>" class="nav-link btn btn-outline-light btn-sm me-2">
+        <i class="fas fa-circle-exclamation me-1"></i> Alertas
+    </a>
+    
+    <!-- Botón de Reportes -->
+    <a href="<?= base_url('/reportes') ?>" class="nav-link btn btn-outline-light btn-sm me-2">
+        <i class="fas fa-chart-bar me-1"></i> Reportes
+    </a>
+    
+    <!-- Usuario y Salir (existente) -->
+    <span class="nav-item navbar-text me-3">
+        <i class="fas fa-users-cog me-1"></i><?= esc($user['username']) ?>
+    </span>
+    <a href="<?= site_url('logout') ?>" class="nav-link btn btn-outline-light btn-sm">
+        <i class="fas fa-sign-out-alt"></i> Salir
+    </a>
+</div>
             </div>
         </div>
     </nav>
+    
 
     <!-- Contenido principal -->
     <div class="container my-4 my-lg-5">
@@ -71,19 +82,19 @@
                         <span>Menú Coordinador</span>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action active d-flex align-items-center">
-                            <i class="fas fa-home me-2"></i>Inicio
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-calendar-alt me-2"></i>Eventos
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-users me-2"></i>Equipos
-                        </a>
-                        <a href="<?= base_url('chat') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-comments me-2"></i>Chat Interno
-                        </a>
-                    </div>
+    <a href="<?= base_url('coordinador/dashboard') ?>" class="list-group-item list-group-item-action active d-flex align-items-center">
+        <i class="fas fa-home me-2"></i>Inicio
+    </a>
+    <a href="<?= base_url('eventos') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-calendar-alt me-2"></i>Eventos
+    </a>
+    <a href="<?= base_url('inventory') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-box-open me-2"></i>Inventario
+    </a>
+    <a href="<?= base_url('chat') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-comments me-2"></i>Chat Interno
+    </a>
+</div>
                 </div>
             </div>
             
@@ -112,54 +123,59 @@
                             </div>
                         </div>
                         
-                        <!-- Tarjetas resumen -->
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-4">
-                                <div class="card border-info h-100">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-muted mb-2">Eventos Activos</h6>
-                                                <h3 class="mb-0">12</h3>
-                                            </div>
-                                            <div class="bg-info bg-opacity-10 p-3 rounded">
-                                                <i class="fas fa-calendar-day text-info"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-info h-100">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-muted mb-2">Equipos</h6>
-                                                <h3 class="mb-0">5</h3>
-                                            </div>
-                                            <div class="bg-info bg-opacity-10 p-3 rounded">
-                                                <i class="fas fa-users text-info"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-info h-100">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-muted mb-2">Mensajes</h6>
-                                                <h3 class="mb-0">3</h3>
-                                            </div>
-                                            <div class="bg-info bg-opacity-10 p-3 rounded">
-                                                <i class="fas fa-envelope text-info"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Tarjetas Resumen Actualizadas -->
+<div class="row g-3 mb-4">
+    <!-- Eventos Activos -->
+    <div class="col-md-4">
+        <a href="<?= base_url('eventos') ?>" class="card border-info h-100 text-decoration-none">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Eventos Activos</h6>
+                        <h3 class="mb-0"><?= isset($eventos_activos) ? count($eventos_activos) : '0' ?></h3>
+                    </div>
+                    <div class="bg-info bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-calendar-day text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Artículos Disponibles -->
+    <div class="col-md-4">
+        <a href="<?= base_url('inventory') ?>" class="card border-info h-100 text-decoration-none">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Artículos Disponibles</h6>
+                        <h3 class="mb-0"><?= isset($inventario) ? count($inventario) : '0' ?></h3>
+                    </div>
+                    <div class="bg-info bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-box-open text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Alertas Pendientes -->
+    <div class="col-md-4">
+        <a href="<?= base_url('alertas') ?>" class="card border-danger h-100 text-decoration-none">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Alertas Pendientes</h6>
+                        <h3 class="mb-0"><?= isset($alertas) ? count($alertas) : '0' ?></h3>
+                    </div>
+                    <div class="bg-danger bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
                         
                         <!-- Sección de acciones rápidas -->
                         <div class="mb-4">
@@ -167,16 +183,21 @@
                                 <i class="fas fa-bolt text-warning me-2"></i> Acciones rápidas
                             </h6>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="#" class="btn btn-outline-info">
-                                    <i class="fas fa-plus-circle me-1"></i> Nuevo Evento
-                                </a>
-                                <a href="#" class="btn btn-outline-info">
-                                    <i class="fas fa-user-plus me-1"></i> Agregar Equipo
-                                </a>
-                                <a href="#" class="btn btn-outline-info">
-                                    <i class="fas fa-file-export me-1"></i> Generar Reporte
-                                </a>
-                            </div>
+    <!-- Nuevo Evento (link al formulario de creación) -->
+    <a href="<?= base_url('eventos/crear') ?>" class="btn btn-outline-info">
+        <i class="fas fa-plus-circle me-1"></i> Nuevo Evento
+    </a>
+    
+    <!-- Ver Alertas Pendientes -->
+    <a href="<?= base_url('alertas') ?>" class="btn btn-outline-danger">
+        <i class="fas fa-circle-exclamation me-1"></i> Alertas Activas
+    </a>
+    
+    <!-- Generar Reporte Rápido -->
+    <a href="<?= base_url('reportes/nuevo') ?>" class="btn btn-outline-dark">
+        <i class="fas fa-file-export me-1"></i> Generar Reporte
+    </a>
+</div>
                         </div>
                         
                         <!-- Sección de actividad reciente -->
@@ -210,6 +231,8 @@
             </div>
         </div>
     </div>
+
+    
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -204,23 +204,26 @@
                                 <a href="<?= route_to('reservas.index') ?>" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> Volver
                                 </a>
-                                 <a href="<?= route_to('devoluciones.cliente_form', $booking['id'] ?? $reservation['id']) ?>" class="btn btn-secondary">
-    <i class="fas fa-arrow-left"></i> Terminar
+                                 <a href="<?= route_to('devoluciones.cliente_form', $booking['id'] ?? $reservation['id']) ?>" class="btn btn-success">
+    <i class="fas fa-check-circle"></i> Finalizar Reserva
 </a>
 
-
+                                <?php if (session('role') === 'administrador' || session('role') === 'cliente'): ?>
                                 <?php if ($type === 'booking' && !empty($itemsReservados) && session('role') === 'administrador'): ?>
                                     <a href="<?= route_to('reservas.liberarItems', $reservation['id']) ?>" class="btn btn-warning ms-2">
                                         <i class="fas fa-unlock"></i> Liberar Artículos
                                     </a>
                                 <?php endif; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
-                    </div>
+                    </div>  
                 </div>
             </div>
         </div>
     </div>
+
+
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

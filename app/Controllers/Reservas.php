@@ -32,28 +32,33 @@ class Reservas extends BaseController
     /**
      * Muestra el listado principal de reservas
      */
-    public function index()
-    {
-        if (!session('isLoggedIn')) {
-            return redirect()->to('/login')->with('error', 'Debes iniciar sesión');
-        }
-
-        $filters = $this->request->getGet();
-        $role = session('role');
-
-        $data = [
-            'title' => ($role === 'administrador') ? 'Todas las Reservas' : 'Mis Reservas',
-            'eventBookings' => ($role === 'administrador') 
-                ? $this->bookingModel->getBookingsWithDetails($filters)
-                : $this->bookingModel->getUserBookings(session('user_id'), $filters),
-            'articleReservations' => ($role === 'administrador')
-                ? $this->reservationModel->getReservationsWithDetails($filters)
-                : $this->reservationModel->getUserReservations(session('user_id'), $filters),
-            'pager' => $this->bookingModel->pager
-        ];
-
-        return view('reservas/inicioReservas', $data);
+    public function index($filter = 'all')
+{
+    if (!session('isLoggedIn')) {
+        return redirect()->to('/login')->with('error', 'Debes iniciar sesión');
     }
+
+    $filters = $this->request->getGet();
+    $role = session('role');
+    
+    // Determinar qué reservas mostrar
+    $showAll = ($role === 'administrador' && $filter !== 'mine');
+    
+    $data = [
+        'title' => $showAll ? 'Todas las Reservas' : 'Mis Reservas',
+        'eventBookings' => $showAll 
+            ? $this->bookingModel->getBookingsWithDetails($filters)
+            : $this->bookingModel->getUserBookings(session('user_id'), $filters),
+        'articleReservations' => $showAll
+            ? $this->reservationModel->getReservationsWithDetails($filters)
+            : $this->reservationModel->getUserReservations(session('user_id'), $filters),
+        'pager' => $this->bookingModel->pager,
+        'filter' => $filter,
+        'current_user_id' => session('user_id') // Añadido para usar en la vista
+    ];
+
+    return view('reservas/inicioReservas', $data);
+}
 
     public function crearReserva()
 {

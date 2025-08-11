@@ -57,15 +57,25 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <div class="navbar-nav ms-auto align-items-center">
-                    <span class="nav-item navbar-text me-3">
-                        <i class="fas fa-user-shield me-1"></i><?= esc($user['username']) ?>
-                    </span>
-                    <a href="<?= site_url('logout') ?>" class="nav-link btn btn-outline-light btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> Salir
-                    </a>
-                </div>
+            <div class="navbar-nav ms-auto align-items-center">
+    <!-- Botón de Accesos al Almacén (prioritario) -->
+    <a href="<?= base_url('almacen') ?>" class="nav-link btn btn-outline-light btn-sm me-2">
+        <i class="fas fa-key me-1"></i> Accesos
+    </a>
+    
+    <!-- Botón de Incidentes -->
+    <a href="<?= base_url('reportes') ?>" class="nav-link btn btn-outline-light btn-sm me-2">
+        <i class="fas fa-clipboard-exclamation me-1"></i> Incidentes
+    </a>
+    
+    <!-- Usuario y Salir (existente) -->
+    <span class="nav-item navbar-text me-3">
+        <i class="fas fa-user-shield me-1"></i><?= esc($user['username']) ?>
+    </span>
+    <a href="<?= site_url('logout') ?>" class="nav-link btn btn-outline-light btn-sm">
+        <i class="fas fa-sign-out-alt"></i> Salir
+    </a>
+</div>
             </div>
         </div>
     </nav>
@@ -81,25 +91,25 @@
                         <span>Menú Seguridad</span>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action active d-flex align-items-center">
-                            <i class="fas fa-home me-2"></i>Inicio
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-clipboard-check me-2"></i>Control de Accesos
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-exclamation-triangle me-2"></i>Incidentes
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-camera me-2"></i>Monitoreo
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-file-alt me-2"></i>Reportes
-                        </a>
-                        <a href="<?= base_url('chat') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-comments me-2"></i>Chat Interno
-                        </a>
-                    </div>
+    <a href="<?= base_url('seguridad/dashboard') ?>" class="list-group-item list-group-item-action active d-flex align-items-center">
+        <i class="fas fa-home me-2"></i>Inicio
+    </a>
+    <a href="<?= base_url('almacen') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-clipboard-check me-2"></i>Control de Accesos
+    </a>
+    <a href="<?= base_url('reportes/nuevo?tipo=incidente') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-exclamation-triangle me-2"></i>Reportar Incidente
+    </a>
+    <a href="<?= base_url('monitoreo') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-camera me-2"></i>Monitoreo (CCTV)
+    </a>
+    <a href="<?= base_url('reportes') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-file-alt me-2"></i>Reportes Diarios
+    </a>
+    <a href="<?= base_url('chat') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-comments me-2"></i>Chat Interno
+    </a>
+</div>
                 </div>
             </div>
             
@@ -130,76 +140,83 @@
                         
                         <!-- Tarjetas de estado -->
                         <div class="row g-3 mb-4">
-                            <div class="col-md-4">
-                                <div class="card border-primary h-100 alert-card border-left-warning">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-muted mb-2">Incidentes Hoy</h6>
-                                                <h3 class="mb-0">2</h3>
-                                                <small class="text-warning">1 sin resolver</small>
-                                            </div>
-                                            <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                                <i class="fas fa-exclamation-triangle text-primary"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-primary h-100 alert-card border-left-success">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-muted mb-2">Accesos Hoy</h6>
-                                                <h3 class="mb-0">47</h3>
-                                                <small class="text-success">+12% desde ayer</small>
-                                            </div>
-                                            <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                                <i class="fas fa-door-open text-primary"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card border-primary h-100 alert-card border-left-danger">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-muted mb-2">Alertas</h6>
-                                                <h3 class="mb-0">3</h3>
-                                                <small class="text-danger">1 crítica</small>
-                                            </div>
-                                            <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                                <i class="fas fa-bell text-primary"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Incidentes (link a reportes) -->
+    <div class="col-md-4">
+        <a href="<?= base_url('reportes?tipo=incidente') ?>" class="card border-primary h-100 alert-card border-left-warning text-decoration-none">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Incidentes Hoy</h6>
+                        <h3 class="mb-0"><?= $incidentes_hoy ?? '0' ?></h3>
+                        <small class="text-warning"><?= $incidentes_sin_resolver ?? '0' ?> sin resolver</small>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-exclamation-triangle text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Accesos al Almacén -->
+    <div class="col-md-4">
+        <a href="<?= base_url('almacen') ?>" class="card border-primary h-100 alert-card border-left-success text-decoration-none">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Accesos Hoy</h6>
+                        <h3 class="mb-0"><?= $accesos_hoy ?? '0' ?></h3>
+                        <small class="text-success"><?= $accesos_autorizados ?? '0' ?> autorizados</small>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-door-open text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Alertas Críticas -->
+    <div class="col-md-4">
+        <a href="<?= base_url('alertas') ?>" class="card border-primary h-100 alert-card border-left-danger text-decoration-none">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Alertas Activas</h6>
+                        <h3 class="mb-0"><?= $alertas_activas ?? '0' ?></h3>
+                        <small class="text-danger"><?= $alertas_criticas ?? '0' ?> críticas</small>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-bell text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
                         
                         <!-- Sección de acciones rápidas -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 d-flex align-items-center">
-                                <i class="fas fa-bolt text-warning me-2"></i> Acciones rápidas
-                            </h6>
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="#" class="btn btn-primary">
-                                    <i class="fas fa-plus-circle me-1"></i> Nuevo Reporte
-                                </a>
-                                <a href="#" class="btn btn-outline-primary">
-                                    <i class="fas fa-user-lock me-1"></i> Control de Acceso
-                                </a>
-                                <a href="#" class="btn btn-outline-primary">
-                                    <i class="fas fa-video me-1"></i> Ver Cámaras
-                                </a>
-                                <a href="#" class="btn btn-outline-primary">
-                                    <i class="fas fa-file-export me-1"></i> Generar Reporte
-                                </a>
-                            </div>
-                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+    <!-- Reportar Incidente Rápido -->
+    <a href="<?= base_url('reportes/nuevo?tipo=incidente') ?>" class="btn btn-primary">
+        <i class="fas fa-plus-circle me-1"></i> Nuevo Incidente
+    </a>
+    
+    <!-- Registrar Acceso No Programado -->
+    <a href="<?= base_url('almacen/nuevo') ?>" class="btn btn-outline-primary">
+        <i class="fas fa-user-clock me-1"></i> Registrar Acceso
+    </a>
+    
+    <!-- Ver Cámaras en Tiempo Real -->
+    <a href="<?= base_url('monitoreo') ?>" class="btn btn-outline-primary">
+        <i class="fas fa-video me-1"></i> Monitoreo CCTV
+    </a>
+    
+    <!-- Checklist de Seguridad -->
+    <a href="<?= base_url('reportes/nuevo?tipo=checklist') ?>" class="btn btn-outline-primary">
+        <i class="fas fa-clipboard-list me-1"></i> Checklist Diario
+    </a>
+</div>
                         
                         <!-- Sección de incidentes recientes -->
                         <div class="mb-4">

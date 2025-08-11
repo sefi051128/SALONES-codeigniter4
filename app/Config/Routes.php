@@ -20,6 +20,22 @@ $routes->get('/logout', 'Home::logout');
 $routes->get('/inicio', 'Home::inicio');
 
 // -----------------------------
+// Perfil de usuario
+// -----------------------------
+$routes->group('profile', function($routes) {
+    $routes->get('/', 'User::profile');
+    $routes->get('edit', 'User::editProfile');
+    $routes->post('update', 'User::updateProfile');
+    $routes->get('profile', 'AuthController::profile');
+});
+
+// -----------------------------
+// Sección de contacto
+// -----------------------------
+$routes->get('contacto', 'Contacto::index');
+$routes->post('contacto/enviar', 'Contacto::enviarMensaje');
+
+// -----------------------------
 // Panel de administrador
 // -----------------------------
 $routes->group('admin', ['filter' => 'auth:administrador'], function($routes) {
@@ -116,8 +132,9 @@ $routes->group('eventos', function($routes) {
 // Módulo de Reservas
 // -----------------------------
 $routes->group('reservas', ['filter' => 'auth'], function($routes) {
-    // Vista principal de reservas
+    // Vista principal de reservas (todas o filtradas)
     $routes->get('/', 'Reservas::index', ['as' => 'reservas.index']);
+    $routes->get('mine', 'Reservas::index/mine', ['as' => 'reservas.mine']); // Nueva ruta
     
     // Nueva ruta para crear reserva (directa)
     $routes->get('crearReserva', 'Reservas::crearReserva', ['as' => 'reservas.crear_reserva']);
@@ -145,9 +162,7 @@ $routes->group('reservas', ['filter' => 'auth'], function($routes) {
     // Rutas comunes para ambos tipos
     $routes->get('ver/(:num)/(booking|reservation)', 'Reservas::ver/$1/$2', ['as' => 'reservas.ver']);
     $routes->post('confirmar/(:num)/(booking|reservation)', 'Reservas::confirmar/$1/$2', ['as' => 'reservas.confirmar']);
-
-    $routes->get('reservas/liberar-items/(:num)', 'Reservas::releaseItems/$1', ['as' => 'reservas.liberarItems']);
-
+    $routes->get('liberar-items/(:num)', 'Reservas::releaseItems/$1', ['as' => 'reservas.liberarItems']);
 });
 
 // -----------------------------
@@ -278,6 +293,24 @@ $routes->group('notificaciones', ['filter' => 'auth'], function($routes) {
     
     // Eliminación
     $routes->get('eliminar/(:num)', 'Notificaciones::eliminar/$1', ['as' => 'notificaciones.eliminar']);
+
+    // Nueva ruta para marcar como leída (usa POST para acciones que modifican datos)
+    $routes->post('marcar-leida/(:num)', 'Notificaciones::marcarLeida/$1', ['as' => 'notificaciones.marcar_leida']);
+});
+
+// -----------------------------
+// Servicios
+// -----------------------------
+$routes->group('servicios', ['namespace' => 'App\Controllers'], function($routes) {
+    // Página principal de servicios
+    $routes->get('/', 'Servicios::index');
+    
+    // Otras rutas relacionadas con servicios pueden ir aquí
+    // $routes->get('nuevo', 'Servicios::crear');
+    // $routes->post('guardar', 'Servicios::guardar');
+    // $routes->get('editar/(:num)', 'Servicios::editar/$1');
+    // $routes->post('actualizar/(:num)', 'Servicios::actualizar/$1');
+    // $routes->get('eliminar/(:num)', 'Servicios::eliminar/$1');
 });
 
 // -----------------------------

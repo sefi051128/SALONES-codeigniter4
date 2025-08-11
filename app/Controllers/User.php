@@ -335,9 +335,127 @@ public function show($id = null)
     ]);
 }
 
+// Añade estos métodos a tu controlador User
 
+/**
+ * Muestra el perfil del usuario logueado
+ */
+public function profile()
+{
+    if (!session('isLoggedIn')) {
+        return redirect()->to('/login')->with('error', 'Debes iniciar sesión para ver tu perfil');
+    }
 
-    
+    $userId = session('user_id');
+    $user = $this->userModel->find($userId);
 
+    if (!$user) {
+        return redirect()->to('/inicio')->with('error', 'Usuario no encontrado');
+    }
+
+    return view('miPerfil', [
+        'user' => $user,
+        'title' => 'Mi Perfil'
+    ]);
+}
+
+/**
+ * Muestra el formulario de edición del perfil
+ */
+public function editProfile()
+{
+    if (!session('isLoggedIn')) {
+        return redirect()->to('/login')->with('error', 'Debes iniciar sesión para editar tu perfil');
+    }
+
+    $userId = session('user_id');
+    $user = $this->userModel->find($userId);
+
+    if (!$user) {
+        return redirect()->to('/inicio')->with('error', 'Usuario no encontrado');
+    }
+
+    return view('editarPerfil', [
+        'user' => $user,
+        'title' => 'Editar Perfil',
+        'validation' => session()->getFlashdata('validation') ?? null
+    ]);
+}
+
+/**
+ * Procesa la actualización del perfil
+ */
+public function updateProfile()
+{
+    if (!session('isLoggedIn')) {
+        return redirect()->to('/login')->with('error', 'Debes iniciar sesión para editar tu perfil');
+    }
+
+    $userId = session('user_id');
+    $user = $this->userModel->find($userId);
+
+    if (!$user) {
+        return redirect()->to('/inicio')->with('error', 'Usuario no encontrado');
+    }
+
+    // Reglas de validación específicas para perfil (no permite cambiar rol)
+    $rules = [
+        'username' => [
+            'rules' => "required|min_length[3]|max_length[20]|is_unique[users.username,id,{$userId}]",
+            'errors' => [
+                'required' => 'El nombre de usuario es obligatorio',
+                'min_length' => 'El usuario debe tener al menos 3 caracteres',
+                'max_length' => 'El usuario no debe exceder 20 caracteres',
+                'is_unique' => 'Este nombre de usuario ya está en uso'
+            ]
+        ],
+        'password' => [
+            'rules' => 'permit_empty|min_length[8]',
+            'errors' => [
+                'min_length' => 'La contraseña debe tener al menos 8 caracteres'
+            ]
+        ],
+        'email' => [
+            'rules' => "required|valid_email|is_unique[users.email,id,{$userId}]",
+            'errors' => [
+                'required' => 'El correo electrónico es obligatorio',
+                'valid_email' => 'Debe ingresar un correo electrónico válido',
+                'is_unique' => 'Este correo electrónico ya está en uso'
+            ]
+        ],
+        'phone' => [
+            'rules' => 'permit_empty|regex_match[/^\+569\d{8}$/]',
+            'errors' => [
+                'regex_match' => 'El teléfono debe tener el formato +56912345678'
+            ]
+        ]
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()
+            ->withInput()
+            ->with('validation', $this->validator);
+    }
+
+    $data = [
+        'username' => $this->request->getPost('username'),
+        'email' => $this->request->getPost('email'),
+        'phone' => $this->request->getPost('phone')
+    ];
+
+    // Solo actualizar la contraseña si se proporcionó una nueva
+    if ($this->request->getPost('password')) {
+        $data['password'] = $this->request->getPost('password');
+    }
+
+    if ($this->userModel->update($userId, $data)) {
+        // Actualizar el nombre en la sesión si cambió
+        session()->set('username', $data['username']);
+        
+        return redirect()->to('/profile')->with('success', 'Perfil actualizado correctamente');
+    }
+
+    return redirect()->back()->withInput()->with('error', 'Error al actualizar el perfil');
+}
 
 }

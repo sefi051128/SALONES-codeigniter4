@@ -448,6 +448,20 @@
     transform: translateY(-2px);
 }
 
+.navbar .highlight {
+    background-color: #e67e22;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-left: 10px;
+    transition: all 0.3s;
+}
+
+.navbar .highlight:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+}
+
 /* Asegurar espacio entre botones */
 .login-btn {
     margin-right: 10px;
@@ -461,47 +475,63 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-    <a href="#" class="logo">
-        <i class="fas fa-chair"></i>
-        EventSalones
-    </a>
+        <a href="<?= base_url('/') ?>" class="logo">
+            <i class="fas fa-chair"></i>
+            EventSalones
+        </a>
 
+        <div class="nav-links">
+            <a href="<?= base_url('/') ?>" class="nav-link">
+                <i class="fas fa-home"></i> Inicio
+            </a>
+            <a href="<?= base_url('servicios') ?>" class="nav-link">
+                <i class="fas fa-concierge-bell"></i> Nosotros
+            </a>
+            <a href="<?= base_url('contacto') ?>" class="nav-link">
+                <i class="fas fa-envelope"></i> Contacto
+            </a>
+            <a href="<?= base_url('sedes') ?>" class="nav-link">
+                <i class="fas fa-building"></i> Sedes
+            </a>
 
-    <div class="nav-links">
-        <a href="<?= base_url('sedes') ?>" class="nav-link">
-        <i class="fas fa-building"></i> Ver Sedes
-    </a>
-        <a href="#servicios">Servicios</a>
-        <a href="#contacto">Contacto</a>
-        
-        <?php if (session('isLoggedIn')): ?>
-            <!-- Usuario Logueado -->
-            <div class="user-dropdown">
-                <button class="user-btn">
-                    <i class="fas fa-user"></i> <?= esc(session('username')) ?>
-                    <span class="role-badge"><?= esc(session('role')) ?></span>
-                </button>
-                <div class="dropdown-content">
-                    <a href="<?= base_url('profile') ?>">Mi Perfil</a>
-                    <?php if (session('role') === 'administrador'): ?>
-                        <a href="<?= base_url('admin') ?>">Panel Admin</a>
-                    <?php elseif (session('role') !== 'cliente'): ?>
-                        <a href="<?= base_url(session('role') . '/dashboard') ?>">Mi Panel</a>
-                    <?php endif; ?>
-                    <a href="<?= base_url('logout') ?>">Cerrar Sesión</a>
+            <!--Botones extra
+            <a href="<?= base_url('galeria') ?>" class="nav-link">
+                <i class="fas fa-images"></i> Galería
+            </a>
+            <a href="<?= base_url('reservas') ?>" class="nav-link highlight">
+                <i class="fas fa-calendar-check"></i> Reservar
+            </a>
+            
+            -->
+            
+            <?php if (session('isLoggedIn')): ?>
+                <!-- Usuario Logueado -->
+                <div class="user-dropdown">
+                    <button class="user-btn">
+                        <i class="fas fa-user"></i> <?= esc(session('username')) ?>
+                        <span class="role-badge"><?= esc(session('role')) ?></span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="<?= base_url('profile') ?>"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+                        <?php if (session('role') === 'administrador'): ?>
+                            <a href="<?= base_url('admin') ?>"><i class="fas fa-cog"></i> Panel Admin</a>
+                        <?php elseif (session('role') !== 'cliente'): ?>
+                            <a href="<?= base_url(session('role') . '/dashboard') ?>"><i class="fas fa-tachometer-alt"></i> Mi Panel</a>
+                        <?php endif; ?>
+                        <a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    </div>
                 </div>
-            </div>
-        <?php else: ?>
-            <!-- Usuario No Logueado -->
-            <a href="<?= base_url('login') ?>" class="login-btn">
-                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
-            </a>
-            <a href="<?= base_url('register') ?>" class="register-btn">
-                <i class="fas fa-user-plus"></i> Registrarse
-            </a>
-        <?php endif; ?>
-    </div>
-</nav>
+            <?php else: ?>
+                <!-- Usuario No Logueado -->
+                <a href="<?= base_url('login') ?>" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+                </a>
+                <a href="<?= base_url('register') ?>" class="register-btn">
+                    <i class="fas fa-user-plus"></i> Registrarse
+                </a>
+            <?php endif; ?>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -645,7 +675,7 @@
             <a href="#"><i class="fab fa-twitter"></i></a>
             <a href="#"><i class="fab fa-whatsapp"></i></a>
         </div>
-        <p class="copyright">© 2023 EventMobiliario. Todos los derechos reservados.</p>
+        <p class="copyright">© 2025 EventMobiliario. Todos los derechos reservados.</p>
     </footer>
 
     <script>

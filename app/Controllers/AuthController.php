@@ -101,4 +101,58 @@ class AuthController extends BaseController
                 return redirect()->to('/inicio');
         }
     }
+
+    public function testLoginAttemptWithInvalidCredentials()
+{
+    $result = $this->call('post', '/login', [
+        'username' => 'usuario_inexistente',
+        'password' => 'password_incorrecta',
+    ]);
+
+    $result->assertStatus(302);
+    $result->assertRedirect();
+
+    $location = $result->getHeaderLine('Location');
+    $this->assertNotEmpty($location, 'La cabecera Location no está presente en la respuesta.');
+
+    $this->assertStringContainsString('/login', $location);
+}
+
+public function testLogoutRedirectsToHome()
+{
+    $result = $this->call('get', '/logout');
+
+    $result->assertStatus(302);
+    $result->assertRedirect();
+
+    $location = $result->getHeaderLine('Location');
+    $this->assertNotEmpty($location, 'La cabecera Location no está presente en la respuesta.');
+
+    $this->assertStringContainsString('/', $location);
+}
+
+// Añade este método a tu AuthController
+public function profile()
+{
+    // Verificar si el usuario está logueado
+    if (!session('isLoggedIn')) {
+        return redirect()->to('/login')->with('error', 'Debes iniciar sesión para ver tu perfil');
+    }
+
+    // Obtener los datos del usuario
+    $userId = session('user_id');
+    $user = $this->userModel->getUserById($userId);
+
+    if (!$user) {
+        return redirect()->to('/inicio')->with('error', 'Usuario no encontrado');
+    }
+
+    // Pasar los datos del usuario a la vista
+    $data = [
+        'user' => $user
+    ];
+
+    return view('miPerfil', $data);
+}
+
 }

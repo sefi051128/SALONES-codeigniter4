@@ -55,13 +55,24 @@
             
             <div class="collapse navbar-collapse" id="navbarContent">
                 <div class="navbar-nav ms-auto align-items-center">
-                    <span class="nav-item navbar-text me-3">
-                        <i class="fas fa-truck me-1"></i><?= esc($user['username']) ?>
-                    </span>
-                    <a href="<?= site_url('logout') ?>" class="nav-link btn btn-outline-light btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> Salir
-                    </a>
-                </div>
+    <!-- Botón de Inventario (prioritario) -->
+    <a href="<?= base_url('inventory') ?>" class="nav-link btn btn-outline-light btn-sm me-2">
+        <i class="fas fa-boxes me-1"></i> Inventario
+    </a>
+    
+    <!-- Botón de Devoluciones -->
+    <a href="<?= base_url('devoluciones') ?>" class="nav-link btn btn-outline-light btn-sm me-2">
+        <i class="fas fa-clipboard-check me-1"></i> Devoluciones
+    </a>
+    
+    <!-- Usuario y Salir (existente) -->
+    <span class="nav-item navbar-text me-3">
+        <i class="fas fa-truck me-1"></i><?= esc($user['username']) ?>
+    </span>
+    <a href="<?= site_url('logout') ?>" class="nav-link btn btn-outline-light btn-sm">
+        <i class="fas fa-sign-out-alt"></i> Salir
+    </a>
+</div>
             </div>
         </div>
     </nav>
@@ -77,25 +88,25 @@
                         <span>Menú Logística</span>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action active d-flex align-items-center">
-                            <i class="fas fa-home me-2"></i>Inicio
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-shipping-fast me-2"></i>Gestión de Envíos
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-warehouse me-2"></i>Inventario
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-map-marked-alt me-2"></i>Rutas
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-clipboard-list me-2"></i>Checklists
-                        </a>
-                        <a href="<?= base_url('chat') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-comments me-2"></i>Chat Interno
-                        </a>
-                    </div>
+    <a href="<?= base_url('logistica/dashboard') ?>" class="list-group-item list-group-item-action active d-flex align-items-center">
+        <i class="fas fa-home me-2"></i>Inicio
+    </a>
+    <a href="<?= base_url('devoluciones') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-shipping-fast me-2"></i>Gestión de Devoluciones
+    </a>
+    <a href="<?= base_url('inventory') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-warehouse me-2"></i>Inventario
+    </a>
+    <a href="<?= base_url('eventos') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-calendar-day me-2"></i>Eventos Activos
+    </a>
+    <a href="<?= base_url('devoluciones/crear') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-clipboard-list me-2"></i>Nuevo Checklist
+    </a>
+    <a href="<?= base_url('chat') ?>" class="list-group-item list-group-item-action d-flex align-items-center">
+        <i class="fas fa-comments me-2"></i>Chat Interno
+    </a>
+</div>
                 </div>
             </div>
             
@@ -182,19 +193,26 @@
                                 <i class="fas fa-bolt text-warning me-2"></i> Acciones rápidas
                             </h6>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="#" class="btn btn-success">
-                                    <i class="fas fa-plus-circle me-1"></i> Nuevo Envío
-                                </a>
-                                <a href="#" class="btn btn-outline-success">
-                                    <i class="fas fa-barcode me-1"></i> Escanear Item
-                                </a>
-                                <a href="#" class="btn btn-outline-success">
-                                    <i class="fas fa-route me-1"></i> Planificar Ruta
-                                </a>
-                                <a href="#" class="btn btn-outline-success">
-                                    <i class="fas fa-file-export me-1"></i> Generar Reporte
-                                </a>
-                            </div>
+    <!-- Escanear Item QR -->
+    <a href="<?= base_url('inventory/qr-scanner') ?>" class="btn btn-success">
+        <i class="fas fa-qrcode me-1"></i> Escanear Item
+    </a>
+    
+    <!-- Checklist de Entrega -->
+    <a href="<?= base_url('devoluciones/crear') ?>" class="btn btn-outline-success">
+        <i class="fas fa-clipboard-check me-1"></i> Checklist Entrega
+    </a>
+    
+    <!-- Reportar Daño -->
+    <a href="<?= base_url('reportes/nuevo?tipo=daño') ?>" class="btn btn-outline-success">
+        <i class="fas fa-exclamation-circle me-1"></i> Reportar Daño
+    </a>
+    
+    <!-- Reporte de Pérdidas -->
+    <a href="<?= base_url('reportes/generar?tipo=perdidas') ?>" class="btn btn-outline-success">
+        <i class="fas fa-file-export me-1"></i> Reporte Pérdidas
+    </a>
+</div>
                         </div>
                         
                         <!-- Sección de envíos pendientes -->
@@ -203,47 +221,43 @@
                                 <i class="fas fa-clock text-success me-2"></i> Envíos Pendientes
                             </h6>
                             <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Destino</th>
-                                            <th>Items</th>
-                                            <th>Prioridad</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>#LOG-7842</td>
-                                            <td>Conferencia Tech</td>
-                                            <td>12</td>
-                                            <td><span class="badge bg-warning">Media</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-success">Detalles</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#LOG-7841</td>
-                                            <td>Expo Diseño</td>
-                                            <td>8</td>
-                                            <td><span class="badge bg-danger">Alta</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-success">Detalles</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#LOG-7839</td>
-                                            <td>Seminario Marketing</td>
-                                            <td>5</td>
-                                            <td><span class="badge bg-success">Baja</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-success">Detalles</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Evento</th>
+                <th>Items</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($envios_pendientes)): ?>
+                <?php foreach ($envios_pendientes as $envio): ?>
+                    <tr>
+                        <td>#<?= $envio['id'] ?></td>
+                        <td><?= $envio['evento_nombre'] ?></td>
+                        <td><?= $envio['total_items'] ?></td>
+                        <td>
+                            <span class="badge bg-<?= $envio['prioridad'] === 'alta' ? 'danger' : ($envio['prioridad'] === 'media' ? 'warning' : 'success') ?>">
+                                <?= ucfirst($envio['prioridad']) ?>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="<?= base_url('devoluciones/ver/' . $envio['id']) ?>" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-eye me-1"></i> Ver
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No hay envíos pendientes</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
                         </div>
                     </div>
                 </div>

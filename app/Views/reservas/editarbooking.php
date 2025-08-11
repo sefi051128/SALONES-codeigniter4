@@ -80,24 +80,48 @@
             </div>
 
             <!-- Opciones de estado y notas -->
-            <h4 class="section-title"><i class="fas fa-cog me-2"></i>Configuración</h4>
-            <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <label class="form-label fw-bold">Estado</label>
-                            <select name="status" class="form-select" required>
-                                <?php foreach (['confirmed','pending','cancelled'] as $opt): ?>
-                                    <option value="<?= esc($opt) ?>" <?= (old('status', $reservation['status']) === $opt) ? 'selected' : '' ?>>
-                                        <?= ucfirst($opt) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
+<div class="mb-4">
+    <h4 class="section-title mb-3">
+        <i class="fas fa-cog me-2"></i>Configuración
+    </h4>
+    
+    <div class="row g-3">
+        <!-- Estado -->
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <label class="form-label fw-bold">Estado</label>
+                    <select name="status" class="form-select" required>
+                        <?php 
+                        $statusOptions = [
+                            'confirmed' => 'Activo',
+                            'pending' => 'Pendiente',
+                            'cancelled' => 'Cancelado'
+                        ];
+                        
+                        foreach ($statusOptions as $value => $label): ?>
+                            <option value="<?= esc($value) ?>" <?= (old('status', $reservation['status'] ?? '') === $value) ? 'selected' : '' ?>>
+                                <?= esc($label) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-                <!-- Puedes agregar más opciones aquí si necesitas notas u otros campos -->
             </div>
+        </div>
+        
+        <!-- Campo de notas - implementación futura 
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <label class="form-label fw-bold">Notas</label>
+                    <textarea name="notes" class="form-control" rows="3" 
+                        placeholder="Agregar notas adicionales..."><?= old('notes', $reservation['notes'] ?? '') ?></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
 
             <!-- Acciones -->
             <div class="d-flex justify-content-between border-top pt-4">

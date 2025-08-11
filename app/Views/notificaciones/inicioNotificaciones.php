@@ -1,3 +1,4 @@
+<?php helper('time'); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,6 +28,7 @@
         .badge-urgente { background-color: #ef4444; }
         .badge-importante { background-color: #f59e0b; }
         .badge-informativo { background-color: #3b82f6; }
+        .badge-recordatorio { background-color: #10b981; }
         .empty-state {
             padding: 3rem 1rem;
             text-align: center;
@@ -42,6 +44,16 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        .notification-row.unread {
+            background-color: #f0f7ff;
+        }
+        .notification-row.unread:hover {
+            background-color: #e1f0ff;
+        }
+        .time-ago {
+            font-size: 0.85rem;
+            color: #6c757d;
         }
         @media (max-width: 768px) {
             .header-actions {
@@ -106,32 +118,48 @@
                         <tbody>
                             <?php if (!empty($notificaciones)): ?>
                                 <?php foreach ($notificaciones as $n): ?>
-                                    <tr>
+                                    <tr class="<?= empty($n['read_at']) ? 'unread' : '' ?>">
                                         <td><?= esc($n['id']) ?></td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 me-2">
-                                                    <i class="fas fa-user-circle text-secondary"></i>
+                                                    <?php if(!empty($n['user_avatar'])): ?>
+                                                        <img src="<?= esc($n['user_avatar']) ?>" class="rounded-circle" width="32" height="32" alt="Avatar">
+                                                    <?php else: ?>
+                                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:32px;height:32px;">
+                                                            <i class="fas fa-user"></i>
+                                                        </div>
+                                                    <?php endif; ?>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <?= esc($n['user_id']) ?>
+                                                    <?= esc($n['username'] ?? 'Usuario #'.esc($n['user_id'])) ?>
+                                                    <?php if(!empty($n['user_role'])): ?>
+                                                        <div class="small text-muted"><?= esc($n['user_role']) ?></div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <span class="badge rounded-pill <?= 
                                                 $n['notification_type'] === 'Urgente' ? 'badge-urgente' : 
-                                                ($n['notification_type'] === 'Importante' ? 'badge-importante' : 'badge-informativo') 
+                                                ($n['notification_type'] === 'Importante' ? 'badge-importante' : 
+                                                ($n['notification_type'] === 'Recordatorio' ? 'badge-recordatorio' : 'badge-informativo')) 
                                             ?>">
                                                 <?= esc($n['notification_type']) ?>
                                             </span>
                                         </td>
                                         <td class="message-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= esc($n['message']) ?>">
                                             <?= esc($n['message']) ?>
+                                            <?php if(!empty($n['event_id'])): ?>
+                                                <div class="small text-muted">Evento #<?= esc($n['event_id']) ?></div>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="text-nowrap">
                                             <i class="far fa-clock text-secondary me-1"></i>
                                             <?= esc($n['sent_date']) ?>
+                                            <div class="time-ago">
+                                                <?= time_ago($n['sent_date']) ?>
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2 action-buttons">
@@ -177,6 +205,27 @@
                 btn.addEventListener('click', function(e) {
                     if (!confirm('¿Está seguro que desea eliminar esta notificación permanentemente?')) {
                         e.preventDefault();
+                    }
+                });
+            });
+
+            // Marcar como leído al hacer clic en la fila
+            document.querySelectorAll('tr[data-notification-id]').forEach(row => {
+                row.addEventListener('click', function() {
+                    if (this.classList.contains('unread')) {
+                        const notificationId = this.getAttribute('data-notification-id');
+                        fetch(`/notificaciones/marcar-leida/${notificationId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Content-Type': 'application/json',
+                                '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                this.classList.remove('unread');
+                            }
+                        });
                     }
                 });
             });

@@ -203,87 +203,108 @@ class Devoluciones extends BaseController
     $db = \Config\Database::connect();
     $db->transStart();
 
-    $bookingId    = $this->request->getPost('booking_id');
-    $eventId      = $this->request->getPost('event_id');
-    $signedBy     = $this->request->getPost('signed_by');
-    $rating       = $this->request->getPost('rating');
-    $globalReview = $this->request->getPost('review') ?: null;
-    $items        = $this->request->getPost('items'); // array de item_id
-    $checklistType = $this->request->getPost('checklist_type') ?? 'devolucion';
+    try {
+        $bookingId    = $this->request->getPost('booking_id');
+        $eventId      = $this->request->getPost('event_id');
+        $signedBy     = $this->request->getPost('signed_by');
+        $rating       = $this->request->getPost('rating');
+        $globalReview = $this->request->getPost('review') ?: null;
+        $items        = $this->request->getPost('items');
+        $checklistType = $this->request->getPost('checklist_type') ?? 'devolucion';
 
-    foreach ($items as $itemId) {
-        $status = $this->request->getPost("status_{$itemId}") ?? 'devuelto';
-        $comment = $this->request->getPost("comment_{$itemId}") ?: null;
-
-        // Procesar foto si aplica
-        $photoUrl = null;
-        if (in_array($status, ['danio', 'perdida'])) {
-            $fileKey = "photo_{$itemId}";
-            $file = $this->request->getFile($fileKey);
-            if ($file && $file->isValid() && !$file->hasMoved()) {
-                $newName = $file->getRandomName();
-                $uploadPath = WRITEPATH . 'uploads/reportes/';
-                if (!is_dir($uploadPath)) {
-                    mkdir($uploadPath, 0777, true);
-                }
-                $file->move($uploadPath, $newName);
-                $photoUrl = $newName;  // Guarda solo el nombre, la ruta completa se arma en la vista
-            }
+        // Obtener detalles completos de la reserva para la notificación
+        $booking = $this->bookingModel->getBookingDetails($bookingId);
+        if (!$booking) {
+            throw new \Exception('Reserva no encontrada');
         }
 
-        // Guardar checklist por ítem
-        $this->checklistModel->insert([
-            'event_id' => $eventId,
-            'item_id' => $itemId,
-            'checklist_type' => $checklistType,
-            'signed_by' => $signedBy,
-            'photo_url' => $photoUrl,
-            'checklist_date' => date('Y-m-d H:i:s'),
-            'review' => $comment,
-        ]);
+        if (session('role') !== 'administrador' && $booking['user_id'] != session('user_id')) {
+            throw new \Exception('No tienes permiso para realizar esta acción');
+        }
 
-        // Crear reporte de incidente si aplica, incluyendo foto_url
-        if (in_array($status, ['danio', 'perdida'])) {
-            $this->incidentReportModel->insert([
+        // Procesar cada ítem
+        foreach ($items as $itemId) {
+            $status = $this->request->getPost("status_{$itemId}") ?? 'devuelto';
+            $comment = $this->request->getPost("comment_{$itemId}") ?: null;
+
+            // Procesar foto si aplica
+            $photoUrl = null;
+            if (in_array($status, ['danio', 'perdida'])) {
+                $fileKey = "photo_{$itemId}";
+                $file = $this->request->getFile($fileKey);
+                if ($file && $file->isValid() && !$file->hasMoved()) {
+                    $newName = $file->getRandomName();
+                    $uploadPath = WRITEPATH . 'uploads/reportes/';
+                    if (!is_dir($uploadPath)) {
+                        mkdir($uploadPath, 0777, true);
+                    }
+                    $file->move($uploadPath, $newName);
+                    $photoUrl = $newName;
+                }
+            }
+
+            // Guardar checklist por ítem
+            $this->checklistModel->insert([
                 'event_id' => $eventId,
                 'item_id' => $itemId,
-                'incident_type' => $status,
-                'description' => $comment,
-                'photo_url' => $photoUrl,  // Aquí se guarda el nombre de la foto
-                'report_date' => date('Y-m-d H:i:s'),
+                'checklist_type' => $checklistType,
+                'signed_by' => $signedBy,
+                'photo_url' => $photoUrl,
+                'checklist_date' => date('Y-m-d H:i:s'),
+                'review' => $comment,
             ]);
+
+            // Crear reporte de incidente si aplica
+            if (in_array($status, ['danio', 'perdida'])) {
+                $this->incidentReportModel->insert([
+                    'event_id' => $eventId,
+                    'item_id' => $itemId,
+                    'incident_type' => $status,
+                    'description' => $comment,
+                    'photo_url' => $photoUrl,
+                    'report_date' => date('Y-m-d H:i:s'),
+                ]);
+            }
+
+            // Actualizar inventario según estado
+            $updateData = ['updated_at' => date('Y-m-d H:i:s')];
+            
+            if ($status === 'devuelto') {
+                $updateData['booking_id'] = null;
+                $updateData['status'] = 'Disponible';
+            } elseif ($status === 'danio') {
+                $updateData['booking_id'] = null;
+                $updateData['status'] = 'Con daño';
+            } elseif ($status === 'perdida') {
+                $updateData['status'] = 'Perdido';
+            }
+
+            $this->inventoryModel->update($itemId, $updateData);
         }
 
-        // Actualizar inventario según estado
-        if ($status === 'devuelto') {
-            $this->inventoryModel->update($itemId, [
-                'booking_id' => null,
-                'status' => 'Disponible',
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
-        } elseif ($status === 'danio') {
-            $this->inventoryModel->update($itemId, [
-                'booking_id' => null,
-                'status' => 'Con daño',
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
-        } elseif ($status === 'perdida') {
-            $this->inventoryModel->update($itemId, [
-                'status' => 'Perdido',
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
+        // Eliminar la reserva después de procesar todos los items
+        $this->bookingModel->delete($bookingId);
+
+        // Crear notificación de reserva finalizada
+        $notificacionModel = model('NotificacionesModel');
+        $notificacionModel->insert([
+            'user_id' => $booking['user_id'],
+            'notification_type' => 'Informativa',
+            'message' => "Reserva #{$bookingId} finalizada - Evento: ".esc($booking['event_name']),
+            'sent_date' => date('Y-m-d H:i:s')
+        ]);
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            throw new \Exception('Ocurrió un error procesando la devolución.');
         }
+
+        return redirect()->to(route_to('reservas.index'))->with('success', 'Devolución completada y reserva finalizada. Gracias por tu reseña.');
+
+    } catch (\Exception $e) {
+        $db->transRollback();
+        return redirect()->back()->withInput()->with('error', $e->getMessage());
     }
-
-    // Aquí podrías guardar la reseña/calificación global en otra tabla si lo deseas.
-
-    $db->transComplete();
-
-    if ($db->transStatus() === false) {
-        return redirect()->back()->withInput()->with('error', 'Ocurrió un error procesando la devolución.');
-    }
-
-    return redirect()->to(route_to('devoluciones.index'))->with('success', 'Devolución completada. Gracias por tu reseña.');
 }
-
 }

@@ -199,7 +199,7 @@
                                                 <label class="form-check-label w-100" for="event_<?= $evento['id'] ?>">
                                                     <div class="d-flex justify-content-between align-items-start">
                                                         <h5 class="mb-1"><?= esc($evento['name']) ?></h5>
-                                                        <span class="badge bg-primary"><?= date('d/m/Y', strtotime($evento['date'])) ?></span>
+                                                        <span class="badge bg-primary">Disponible hasta el: <?= date('d/m/Y', strtotime($evento['date'])) ?></span>
                                                     </div>
                                                     <div class="ms-3 mt-2">
                                                         <p class="mb-1 text-muted">
@@ -419,6 +419,7 @@
                                                                     <i class="fas fa-user me-1"></i>Responsable: <?= esc($item['current_responsible']) ?>
                                                                 </p>
                                                             <?php endif; ?>
+                                                            
                                                             
                                                             <?php if($item['status'] === 'Disponible'): ?>
                                                                 <div class="mt-3">

@@ -1,0 +1,7 @@
+Reportes (Tests\App\Controllers\Reportes)
+ [x] Index carga con sesion
+ [x] Nuevo carga formulario
+ [x] Guardar con datos invalidos redirige con error
+ [x] Editar reporte inexistente redirige con error
+ [x] Eliminar reporte inexistente redirige con error
+

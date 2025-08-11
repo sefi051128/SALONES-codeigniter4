@@ -476,6 +476,9 @@
             <a href="<?= base_url('eventos') ?>" class="btn btn-info me-2">
                         <i class="fas fa-calendar-alt me-1"></i> Ver todos los eventos
                     </a>
+                    <a href="<?= route_to('reservas.mine') ?>" class="btn btn-info me-2">
+    <i class="fas fa-calendar-alt me-1"></i> Ver mis reservas
+</a>
                     <?php endif; ?>
 
             <?php if(session('role') === 'administrador'): ?>
@@ -608,12 +611,7 @@
     <?php if(session('role') !== 'administrador'): ?>
     <footer>
         <div class="footer-container">
-            <div class="footer-nav">
-                <a href="<?= base_url('/') ?>" class="footer-nav-link">Inicio</a>
-                <a href="<?= base_url('sedes') ?>" class="footer-nav-link">Sedes</a>
-                <a href="#servicios" class="footer-nav-link">Servicios</a>
-                <a href="#contacto" class="footer-nav-link">Contacto</a>
-            </div>
+            
             <div class="social-icons">
                 <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>

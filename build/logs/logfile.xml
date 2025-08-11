@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\App\Controllers\ReportesTest" file="C:\xampp\htdocs\SALONES codeigniter4\tests\controllers\ReportesTest.php" tests="5" assertions="8" errors="0" failures="0" skipped="0" time="0.165737">
+    <testcase name="testIndexCargaConSesion" file="C:\xampp\htdocs\SALONES codeigniter4\tests\controllers\ReportesTest.php" line="16" class="Tests\App\Controllers\ReportesTest" classname="Tests.App.Controllers.ReportesTest" assertions="1" time="0.104367"/>
+    <testcase name="testNuevoCargaFormulario" file="C:\xampp\htdocs\SALONES codeigniter4\tests\controllers\ReportesTest.php" line="24" class="Tests\App\Controllers\ReportesTest" classname="Tests.App.Controllers.ReportesTest" assertions="1" time="0.015761"/>
+    <testcase name="testGuardarConDatosInvalidosRedirigeConError" file="C:\xampp\htdocs\SALONES codeigniter4\tests\controllers\ReportesTest.php" line="32" class="Tests\App\Controllers\ReportesTest" classname="Tests.App.Controllers.ReportesTest" assertions="2" time="0.018926"/>
+    <testcase name="testEditarReporteInexistenteRedirigeConError" file="C:\xampp\htdocs\SALONES codeigniter4\tests\controllers\ReportesTest.php" line="49" class="Tests\App\Controllers\ReportesTest" classname="Tests.App.Controllers.ReportesTest" assertions="2" time="0.013692"/>
+    <testcase name="testEliminarReporteInexistenteRedirigeConError" file="C:\xampp\htdocs\SALONES codeigniter4\tests\controllers\ReportesTest.php" line="59" class="Tests\App\Controllers\ReportesTest" classname="Tests.App.Controllers.ReportesTest" assertions="2" time="0.012991"/>
+  </testsuite>
+</testsuites>

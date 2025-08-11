@@ -145,9 +145,11 @@
                                             <a href="/inventory/edit/<?= $item['id'] ?>" class="btn btn-warning btn-sm action-btn" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            <!-- Botón directo para cambiar ubicación (deshabilitado por ahora)
                                             <a href="/inventory/update-location/<?= $item['id'] ?>" class="btn btn-info btn-sm action-btn" title="Cambiar ubicación">
                                                 <i class="fas fa-location-arrow"></i>
                                             </a>
+                                            -->
                                             <a href="/inventory/qr/<?= $item['id'] ?>" target="_blank" class="btn btn-secondary btn-sm action-btn" title="Ver QR">
                                                 <i class="fas fa-qrcode"></i>
                                             </a>

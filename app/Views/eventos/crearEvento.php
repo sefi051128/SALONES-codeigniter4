@@ -40,7 +40,7 @@
             </div>
             
             <div class="mb-3">
-                <label class="form-label"><i class="fas fa-calendar-day"></i> Fecha y Hora</label>
+                <label class="form-label"><i class="fas fa-calendar-day"></i> Disponoible hasta la Fecha y Hora:</label>
                 <input type="datetime-local" name="date" class="form-control" 
                        value="<?= old('date') ?>" required>
             </div>
@@ -56,7 +56,7 @@
                 <select name="status" class="form-select" required>
                     <option value="">Seleccione un estado</option>
                     <option value="activo" <?= old('status') == 'activo' ? 'selected' : '' ?>>Activo</option>
-                    <option value="inactivo" <?= old('status') == 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
+                    <option value="completado" <?= old('status') == 'completado' ? 'selected' : '' ?>>Completado</option>
                     <option value="cancelado" <?= old('status') == 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
                 </select>
             </div>

@@ -13,4 +13,6 @@ class Seguridad extends BaseController
         ];
         return view('seguridad/inicioSeguridad', $data);
     }
+
+    
 }

@@ -11,33 +11,30 @@ use CodeIgniter\I18n\Time;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .badge-status {
-    font-size: 0.85rem;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-weight: bold;
-}
-
-.badge-activo {
-    background-color: #198754; /* verde */
-    color: white;
-}
-
-.badge-cancelado {
-    background-color: #dc3545; /* rojo */
-    color: white;
-}
-
-.badge-completado {
-    background-color: #0d6efd; /* azul */
-    color: white;
-}
-
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .badge-activo {
+            background-color: #198754; /* verde */
+            color: white;
+        }
+        .badge-cancelado {
+            background-color: #dc3545; /* rojo */
+            color: white;
+        }
+        .badge-completado {
+            background-color: #0d6efd; /* azul */
+            color: white;
+        }
         .event-card {
             transition: all 0.3s ease;
             margin-bottom: 20px;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            height: 100%;
         }
         .event-card:hover {
             transform: translateY(-5px);
@@ -54,6 +51,7 @@ use CodeIgniter\I18n\Time;
             padding: 5px 10px;
             border-radius: 5px;
             font-weight: bold;
+            white-space: nowrap;
         }
         .venue-info {
             background-color: #f8f9fa;
@@ -61,100 +59,118 @@ use CodeIgniter\I18n\Time;
             padding: 15px;
             margin-bottom: 20px;
         }
+        .btn-action-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 576px) {
+            .event-date-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .btn-reserve {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container py-5">
+    <div class="container py-3 py-md-5">
         <!-- Información de la sede -->
-<?php if (!empty($venue)): ?>
-<div class="venue-info">
-    <div class="d-flex justify-content-between align-items-center">
-        <h2><i class="fas fa-map-marker-alt"></i> <?= esc($venue['name']) ?></h2>
-        <a href="<?= base_url('sedes') ?>" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left"></i> Volver a sedes
-        </a>
-    </div>
-    <p class="mb-1"><i class="fas fa-location-dot"></i> <?= esc($venue['location']) ?></p>
-    <p><i class="fas fa-users"></i> Capacidad: <?= $venue['capacity'] ?> personas</p>
-</div>
-<?php endif; ?>
+        <?php if (!empty($venue)): ?>
+        <div class="venue-info">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                <h2 class="mb-3 mb-md-0"><i class="fas fa-map-marker-alt me-2"></i><?= esc($venue['name']) ?></h2>
+                <a href="<?= base_url('sedes') ?>" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Volver a sedes
+                </a>
+            </div>
+            <div class="mt-3">
+                <p class="mb-1"><i class="fas fa-location-dot me-2"></i><?= esc($venue['location']) ?></p>
+                <p class="mb-0"><i class="fas fa-users me-2"></i>Capacidad: <?= $venue['capacity'] ?> personas</p>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <!-- Listado de eventos -->
- <h3 class="mb-4"><i class="fas fa-calendar-days"></i> Eventos programados</h3>
-
-<div class="mb-3 d-flex flex-wrap gap-2">
-    <a href="/sedes" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left"></i> Atrás
-    </a>
-    
-    <?php if (session('role') === 'administrador'): ?>
-    <a href="<?= base_url('eventos/crear') ?>" class="btn btn-success">
-        <i class="fas fa-plus"></i> Crear Nuevo Evento
-    </a>
-
-<?php endif; ?>
-
-</div>
-
-    
-         
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+            <h3 class="mb-3 mb-md-0"><i class="fas fa-calendar-days me-2"></i>Eventos programados</h3>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/sedes" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Atrás
+                </a>
+                
+                <?php if (session('role') === 'administrador'): ?>
+                <a href="<?= base_url('eventos/crear') ?>" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i> Crear Nuevo Evento
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
         
         <?php if (empty($events)): ?>
             <div class="alert alert-info">
                 No hay eventos programados para esta sede.
             </div>
         <?php else: ?>
-            <div class="row">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 <?php foreach ($events as $event): ?>
-                    <div class="col-md-6">
-                        <div class="card event-card">
+                    <div class="col">
+                        <div class="card event-card h-100">
                             <div class="event-header">
-    <div class="d-flex justify-content-between align-items-center">
-        <h4><?= esc($event['name']) ?></h4>
-        <span class="badge-status 
-            <?php
-                switch ($event['status']) {
-                    case 'activo': echo 'badge-activo'; break;
-                    case 'cancelado': echo 'badge-cancelado'; break;
-                    case 'completado': echo 'badge-completado'; break;
-                    default: echo 'bg-secondary text-white';
-                }
-            ?>">
-            <?= ucfirst($event['status']) ?>
-        </span>
-    </div>
-</div>
-
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-3">
-                                    <span class="event-date">
-                                        <i class="fas fa-clock"></i> <?= Time::parse($event['date'])->toLocalizedString('MMM d, yyyy h:mm a') ?>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0"><?= esc($event['name']) ?></h4>
+                                    <span class="badge-status 
+                                        <?php
+                                            switch ($event['status']) {
+                                                case 'activo': echo 'badge-activo'; break;
+                                                case 'cancelado': echo 'badge-cancelado'; break;
+                                                case 'completado': echo 'badge-completado'; break;
+                                                default: echo 'bg-secondary text-white';
+                                            }
+                                        ?>">
+                                        <?= ucfirst($event['status']) ?>
                                     </span>
-                                 
-    <a href="<?= site_url('reservas/crearReserva/'.$event['id']) ?>" class="btn btn-sm btn-success">
-    <i class="fas fa-calendar-check"></i> Reservar
-</a>
+                                </div>
+                            </div>
 
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3 event-date-container">
+                                    <span class="event-date mb-2 mb-sm-0">
+                                        <i class="fas fa-clock me-1"></i><?= Time::parse($event['date'])->toLocalizedString('MMM d, yyyy h:mm a') ?>
+                                    </span>
+                                    
+                                    <!-- Botóin de reservar un evento específico - implementación futura
+                                    <a href="<?= site_url('reservas/crearReserva/'.$event['id']) ?>" class="btn btn-sm btn-success btn-reserve">
+                                        <i class="fas fa-calendar-check me-1"></i> Reservar
+                                    </a>
+                                    -->
                                 </div>
                                 
-                                <p class="card-text"><?= esc($event['description']) ?></p>
+                                <p class="card-text flex-grow-1"><?= esc($event['description']) ?></p>
                                 
                                 <div class="d-flex justify-content-between mt-3">
-                                    <button class="btn btn-outline-primary btn-sm btn-services" data-event-id="<?= $event['id'] ?>">
-                                        <i class="fas fa-concierge-bell"></i> Ver servicios
-                                    </button>
-                                    <?php if(session('role') === 'administrador'): ?>
-                                        <div>
-                                            <a href="<?= base_url('eventos/editar/'.$event['id']) ?>" class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit"></i> Editar
-                                            </a>
-                                            <form action="<?= base_url('eventos/eliminar/'.$event['id']) ?>" method="post" style="display:inline;" onsubmit="return confirm('¿Seguro que quieres eliminar este evento?');">
-    <?= csrf_field() ?>
-    <button type="submit" class="btn btn-sm btn-danger">
-        <i class="fas fa-trash-alt"></i> Eliminar
-    </button>
-</form>
 
+                                <!-- Botón de ver servicios relacionados al evento - implementación futura    
+                                <button class="btn btn-outline-primary btn-sm btn-services" data-event-id="<?= $event['id'] ?>">
+                                        <i class="fas fa-concierge-bell me-1"></i> Ver servicios
+                                    </button>
+                                    -->
+
+                                    <?php if(session('role') === 'administrador'): ?>
+                                        <div class="btn-action-group">
+                                            <a href="<?= base_url('eventos/editar/'.$event['id']) ?>" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                                <span class="d-none d-sm-inline"> Editar</span>
+                                            </a>
+                                            <form action="<?= base_url('eventos/eliminar/'.$event['id']) ?>" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que quieres eliminar este evento?');">
+                                                <?= csrf_field() ?>
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                    <span class="d-none d-sm-inline"> Eliminar</span>
+                                                </button>
+                                            </form>
                                         </div>
                                     <?php endif; ?>
                                 </div>
